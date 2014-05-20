@@ -1,0 +1,3 @@
+div#new_ticket select, div#new_ticket input:not([type="submit"],[type="reset"],[type="button"]), div#new_ticket textarea {
+    width: 600px;
+}

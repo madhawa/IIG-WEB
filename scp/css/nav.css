@@ -1,0 +1,38 @@
+ul {
+    list-style: none;
+    margin-left: 0;
+}
+
+ul.left_nav {
+    position: fixed;
+    margin-top: 30px;
+    padding-left: 0;
+}
+ul.left_nav a {
+    text-align: center;
+}
+
+ul.left_nav li.has-sub ul {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+ul.left_nav>li>a {
+    background-color: #66CCFF;
+    display: block;
+    font-size: 1.4em;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    width: 200px;
+}
+
+
+ul.left_nav li.has-sub a {
+    background-color: #9999FF;
+    display: block;
+    font-size: 2em;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}

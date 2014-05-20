@@ -1,0 +1,26 @@
+<html>
+<head>
+<!-- <link rel="stylesheet" media="all" type="text/css" href="../css/jquery-ui.css" /> -->
+<link rel="stylesheet" href="../styles/jquery-ui.css" type="text/css" media="screen" />
+<link rel="stylesheet" media="all" type="text/css" href="../css/jquery-ui-timepicker-addon.css" />
+
+<script type="text/javascript" src="../js/jquery-2.1.1.js"></script>
+<script type="text/javascript" src="../js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+</head>
+<body>
+<input type="text" class="ticket_datetimepicker" name="date"><button type="button" name="run">run</button>
+<script type="text/javascript">
+$('.ticket_datetimepicker').datetimepicker({
+    controlType: 'select',
+    dateFormat: "dd-mm-yy",
+    timeFormat: 'hh:mm tt'
+});
+$('button[name="run"]').click(function(event) {
+    var date_ = $('.ticket_datetimepicker').datetimepicker('getDate');
+    alert(date_);
+});
+</script>
+</body>
+</html>

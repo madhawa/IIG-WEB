@@ -1,0 +1,18 @@
+div.each_other_type_div {
+    border: 2px solid #008000;
+    padding: 10px 30px;
+}
+table.cin_info th {
+
+}
+div#loaded div.each_other_type_div div:first-child {
+
+}
+div#loaded div.service_input {
+    display: none;
+}
+
+button[name="edit_service"], button[name="delete_service"] {
+    display: inline-block;
+    margin-left: auto;
+}

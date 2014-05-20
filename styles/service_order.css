@@ -1,0 +1,145 @@
+/* START Service Order Form */
+
+span.red {
+	color: red;
+}
+
+div#order_full_form {
+    padding: 10px 50px;
+}
+
+div#order_full_form input, div#order_full_form select {
+    height: 30px;
+    padding: 2px;
+    margin: 5px 0;
+}
+select option {
+    height: 30px;
+    padding: 3px 3px;;
+}
+
+div#order_full_form table {
+    width: 100%;
+}
+td#company_logo img {
+    width: 100%;
+}
+
+input[name=customer_rel_no],input[name=customer_name],input[name=customer_email],input[name=order_creator_name],input[name=order_creator_dept_name],input[name=order_customer_name],input[name=order_customer_as_sys_name],input[name=order_customer_as_set_num] {
+    width: 300px;
+}
+
+div#order_full_form select {
+    width: 150px;
+    height: 30px;
+}
+
+div#order_full_form select option {
+    height: 30px;
+    padding: 5px;
+}
+
+select[name="customer_type"], select[name="service_type"], select[name="circuit_type"] {
+    width: 300px;
+}
+
+
+input[name=order_creator_address],input[name=order_customer_address],input[name=order_technical_contact_name],input[name=order_technical_contact_messengers] {
+    width: 80%;
+}
+
+input[name=order_customer_connectivity_capacity_others],input[name=order_customer_protocol_others],input[name=order_customer_connectivity_interface_others],input[name=order_customer_equipment_others] {
+    width: 100%
+}
+
+
+div#order_billing_info table#billing_info {
+width: 50%;
+}
+#order_full_form {
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+#order_full_form > h1 {
+    text-align: center;
+
+}
+#service_order_form_head {
+    position: relative;
+}
+
+div#service_order_form_head div#company_logo {
+    background-image: url("../images/company_logo.png");
+    height: 100%;
+    width: 100%;
+    background-repeat: no-repeat;
+}
+
+#order_details > h2 {
+    text-align: center;
+    background-color: grey;
+    color: white;
+}
+div#customer_end_details {
+width: 100%;
+}
+#customer_end_details > h3 {
+    text-align: center;
+    background-color: grey;
+    color: white;
+    width: 200px;
+}
+#order_billing_info > h2 {
+    color: white;
+    background-color: grey;
+    width: 400px;
+    text-align: center;
+}
+#special_requests_if_any > h2 {
+    color: white;
+    background-color: grey;
+    width: 400px;
+}
+div#terms_and_final ul {
+    margin-left: 20px;
+}
+
+
+
+div#grouped_orders table {
+    margin-left: auto;
+    margin-right: auto;
+}
+div#grouped_orders table td, div#grouped_orders table th {
+    padding: 2em;
+    width: auto;
+}
+
+div#order_client_info {
+    border: 1px solid black;
+}
+div.order_updown_signature {
+    width: 300px;
+    height: 200px;
+    border: 1px solid black;
+    display: inline-block;
+    margin-left: 50px;
+    padding: 20px;
+}
+div#order_client_info {
+    padding: 20px;
+}
+div#order_updown_technical_info {
+    margin-bottom: 50px;
+    border: 1px solid black;
+    padding: 20px;
+}
+div#order_updown h2 {
+    text-align: center;
+}
+div#order_updown [name="submit"] {
+    width: 300px;
+    height: 50px;
+    margin-left: 500px;
+}

@@ -1,0 +1,19 @@
+/* transmission */
+div.transmission {
+    border: 1px solid;
+    padding: 50px;
+    width: 70%;
+}
+div.transmission_protection {
+    padding-right: 50px;
+}
+div.transmission_spf {
+    padding-right: 50px;
+}
+div#transmission_spf_mode {
+    
+    display: none;
+}
+div#protection_status_type {
+    display: none;
+}

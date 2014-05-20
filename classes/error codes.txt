@@ -1,0 +1,1 @@
+1: hidden input field client_id from order form is empty. This should not be as order is created when client logged in

@@ -1,0 +1,42 @@
+div#order_dash {
+    
+}
+
+div.dash_div {
+    margin-top: 50px;
+    padding: 50px;
+    width: auto;
+    overflow: auto;
+    border: 2px none;
+    box-shadow: 5px 5px 5px 5px #AAAAAA;
+}
+div.dash_div th, div.dash_div td {
+    padding: 10px;
+}
+div.dash_div th {
+    background-color: grey;
+}
+div.dash_div td {
+    background-color: #81C6DD;
+}
+
+div#ticket_just_by_now {
+    box-shadow: 5px 5px 5px 5px #AAAAAA;
+    width: 500px;
+    margin-top: 50px;
+    padding: 10px 0 10px 10px;
+}
+div#staff_activity_div {
+    width: auto;
+}
+
+div#ticket_just_by_now th, div#ticket_just_by_now td {
+    padding: 10px;
+    border: 1px solid grey;
+}
+div#ticket_just_by_now th {
+    background-color: #B0B0B0 ;
+}
+span.red {
+    color: red;
+}
