@@ -31,23 +31,18 @@ if ($_POST && $_REQUEST['t'] && !$errors) {
 
     switch (strtolower($_REQUEST['t'])) {
         case 'dept':
-            include_once(INCLUDE_DIR . 'class.dept.php');
-            $do = strtolower($_POST['do']);
+            $do = strtolower($_REQUEST['do']);
             switch ($do) {
                 case 'update':
                     $dept = new Dept($_POST['dept_id']);
                     if ($dept && $dept->getId()) {
                         if ($dept->update($_POST, $errors)) {
-                                $msg = 'Dept updated successfully';
-                                $sth = add_users_to_dept($_POST['dept_memebers'], $deptID);
-                                if ( $sth !== true ) {
-                                    $errors['err'] = $sth;
-                                }
-                            }
-                        elseif (!$errors['err'])
-                            $errors['err'] = 'Error updating the department';
-                    }else {
-                        $errors['err'] = 'Internal error';
+                            $msg = 'Dept updated successfully';
+                        } else {
+                            $errors['err'] .= 'Error updating the department';
+                        }
+                    } else {
+                        $errors['err'] = 'wrong dept id';
                     }
                     break;
                 case 'create':
@@ -58,6 +53,17 @@ if ($_POST && $_REQUEST['t'] && !$errors) {
                         $errors['err'] .= ' Unable to add department ';
                     }
                     break;
+                case 'delete':
+                    if (Dept::delete($_POST['dept_id'], $errors)) {
+                        $msg = 'delete success '.$errors['err'];
+                        SessionFlash::set_flash_message($msg);
+                        
+                        redirect(SCP_URL.'/departments.php');
+                    } else {
+                        $error['err'] .= ' delete failure! ';
+                    }
+                    break;
+                /*
                 case 'mass_process':
                     if (!$_POST['ids'] || !is_array($_POST['ids'])) {
                         $errors['err'] = 'You must select at least one department';
@@ -107,6 +113,7 @@ if ($_POST && $_REQUEST['t'] && !$errors) {
                         }
                     }
                     break;
+                    */
                 default:
                     $errors['err'] = 'Unknown Dept action';
             }
@@ -117,8 +124,13 @@ if ($_POST && $_REQUEST['t'] && !$errors) {
     
     
 //Process requested tab.
+$nav->setTabActive('depts');
+$nav->addSubMenu(array('desc' => 'Departments', 'href' => 'departments.php?t=depts', 'iconclass' => 'departments'));
+$nav->addSubMenu(array('desc' => 'Add New Dept.', 'href' => 'departments.php?t=depts&amp;a=new', 'iconclass' => 'newDepartment'));
+
 $thistab = strtolower($_REQUEST['t'] ? $_REQUEST['t'] : 'dashboard');
 $inc = $page = ''; //No outside crap please!
+$page = $dept? 'dept.inc.php' : 'depts.inc.php';
 $submenu = array();
 switch ($thistab) {
     case 'dept': //lazy
@@ -135,9 +147,6 @@ switch ($thistab) {
         if ($_REQUEST['a'] == 'new') {
             $page = 'newdept.inc.php';
         }
-        $nav->setTabActive('depts');
-        $nav->addSubMenu(array('desc' => 'Departments', 'href' => 'departments.php?t=depts', 'iconclass' => 'departments'));
-        $nav->addSubMenu(array('desc' => 'Add New Dept.', 'href' => 'departments.php?t=depts&amp;a=new', 'iconclass' => 'newDepartment'));
         break;
 }
     
@@ -147,13 +156,21 @@ $inc = ($page) ? STAFFINC_DIR . $page : '';
 require(STAFFINC_DIR . 'header.inc.php');
 ?>
 <div>
+    <?php
+        if ( SessionFlash::get_flash_message() ) {
+            $msg = SessionFlash::get_flash_message();
+            SessionFlash::clear_flash();
+        }
+    ?>
     <?php if ($errors['err']) { ?>
         <p align="center" id="errormessage"><?php   echo   $errors['err'] ?></p>
-    <?php } elseif ($msg) { ?>
+    <?php } ?>
+    <?php if ($msg) { ?>
         <p align="center" id="infomessage"><?php   echo   $msg ?></p>
-    <?php } elseif ($warn) { ?>
+    <?php } ?>
+    <?php if ($warn) { ?>
         <p align="center" id="warnmessage"><?php   echo   $warn ?></p>
-<?php } ?>
+    <?php } ?>
 </div>
 
 <div style="margin:0 5px 5px 5px;">

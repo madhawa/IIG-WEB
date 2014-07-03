@@ -7,7 +7,6 @@
 
 
  * ******************************************************************** */
-//TODO: log permission denied issues, access violations
 if (!defined('CLIENTSOFINC'))
     die('Access Denied');
 /*
@@ -27,7 +26,6 @@ $flag = '';
 $order = null; //clean start.
 //LOCKDOWN...See if the id provided is actually valid and if the user has access.
 if (!$errors && ($id = $_REQUEST['id'] ? $_REQUEST['id'] : $_POST['order_id'])) {
-    //TODO: log permission denied issues, access violations
     if ($thisuser->isClientAdmin() || $thisuser->onlyView()) {
         $order = new ServiceOrder($id);
         if (!$errors && $order->getId() == $id)
@@ -40,7 +38,6 @@ $asked_status = Format::striptags($_REQUEST['status']);
 
 //At this stage we know the access status. we can process the post.
 if ($_POST && !$errors) {
-    //TODO: add more security by checking order_id and do field values from form submission
     if ($order && $order->getId()) {
         //More tea please.
         $errors = array();
@@ -59,7 +56,6 @@ if ($_POST && !$errors) {
                         $errors['err'] = 'Problems cancelling the order. Try again';
                 }
             } elseif (!$thisuser->isClientAdmin()) {
-                //TODO: log permission denied issues, access violations
                 $errors['err'] = 'Access denied, you have no permission for this action';
             } else {
                 if (!$errors['err'])

@@ -44,9 +44,13 @@ class Dept {
             $this->getEmail(); //Auto load email struct.
         }
     }
+    
+    function reload() {
+        $this->Dept($this->getId());
+    }
 
     function getId(){
-        return $this->id;
+        return $this->row['dept_id'];
     }
     
     function getName(){
@@ -103,6 +107,19 @@ class Dept {
             }
         }
         return $ids;
+    }
+    
+    function getMembers() {
+        $m = array();
+        $sql = 'SELECT staff_id FROM ' . STAFF_TABLE . ' WHERE dept_id=' . db_input($this->getId());
+        if ( ($res=db_query($sql)) && db_num_rows($res) ) {
+            while( $row = db_fetch_array($res) ) {
+                if(($staff = new Staff($row['staff_id'])) && $staff->getId()) {
+                    $m[] = $staff;
+                }
+            }
+        }
+        return $m;
     }
 
     function getManagers(){
@@ -188,13 +205,6 @@ class Dept {
         return $this->row;
     }
 
-    function update($vars,&$errors) {
-        if($this->save($this->getId(),$vars,$errors)){
-            return true;
-        }
-        return false;
-    }
-
 
     
 	function getInfoById($id) {
@@ -272,78 +282,14 @@ class Dept {
 
 
     function create($vars,&$errors) {
-        return Dept::save(0,$vars,$errors);
-    }
-
-
-    function delete($id) {
-        global $cfg; 
-        if($id==$cfg->getDefaultDeptId())
-            return 0;
-        
-        $sql='DELETE FROM '.DEPT_TABLE.' WHERE dept_id='.db_input($id);
-        if(db_query($sql) && ($num=db_affected_rows())){
-            // DO SOME HOUSE CLEANING
-            //TODO: Do insert select internal note...
-            //Move tickets to default Dept.
-            db_query('UPDATE '.TICKET_TABLE.' SET dept_id='.db_input($cfg->getDefaultDeptId()).' WHERE dept_id='.db_input($id));
-            //Move Dept members 
-            //This should never happen..since delete should be issued only to empty Depts...but check it anyways 
-            db_query('UPDATE '.STAFF_TABLE.' SET dept_id='.db_input($cfg->getDefaultDeptId()).' WHERE dept_id='.db_input($id));
-            //make help topic using the dept default to default-dept.
-            db_query('UPDATE '.TOPIC_TABLE.' SET dept_id='.db_input($cfg->getDefaultDeptId()).' WHERE dept_id='.db_input($id));
-            return $num;
-        }
-        return 0;
-        
-    }
-    
-    
-    //to update department permissions, just pass the whole POST array as $data
-    function update_dept_permissions($data) {
-        $dept_id = $data['dept_id'];
-        print_r($data);
-        
-        $sql = '';
-        foreach ( $data as $key=>$value ) {
-            if ( strpos($key, PERMISSION_FIELDS_PREFIX) !== FALSE ) {
-                $sql = $sql . ',' . $key . '=' . db_input($value);
-            }
-        }
-        $sql = trim($sql, ',');
-        
-        $sql='UPDATE '.DEPT_TABLE.' SET updated=NOW(),'.$sql.' WHERE dept_id='.db_input($dept_id);
-        
-        if ( db_query($sql) ) {
-            return true;
-        } else {
+        if(!$vars['dept_name']) {
+            $errors['dept_name']='Dept name empty';
             return false;
-        }
-    }
-    
-    
-
-    function save($id,$vars,&$errors) {
-        global $cfg;
-                
-        if($id && $id!=$_POST['dept_id'])
-            $errors['err']='Missing or invalid Dept ID';
-        
-        /*
-        if(!$_POST['email_id'] || !is_numeric($_POST['email_id']))
-            $errors['email_id']='Dept email required';
-            
-        if(!is_numeric($_POST['tpl_id']))
-            $errors['tpl_id']='Template required';
-        */
-            
-        if(!$_POST['dept_name']) {
-            return false;
-        }elseif(strlen($_POST['dept_name'])<4) {
+        }elseif(strlen($vars['dept_name'])<4) {
             $errors['dept_name']='Dept name must be at least 4 chars.';
             return false;
         }else{
-            $sql='SELECT dept_id FROM '.DEPT_TABLE.' WHERE dept_name='.db_input($_POST['dept_name']);
+            $sql='SELECT dept_id FROM '.DEPT_TABLE.' WHERE dept_name='.db_input($vars['dept_name']);
             if($id)
                 $sql.=' AND dept_id!='.db_input($id);
                 
@@ -352,17 +298,116 @@ class Dept {
                 return false;
             }
         }
-
-        /*
-        if($_POST['ispublic'] && !$_POST['dept_signature'])
-            $errors['dept_signature']='Signature required';
-            
-        if(!$_POST['ispublic'] && ($_POST['dept_id']==$cfg->getDefaultDeptId()))
-            $errors['ispublic']='Default department can not be private';
-        */
-
-        if(!$errors){
         
+        return Dept::save(0,$vars,$errors);
+    }
+    
+    function update($vars,&$errors) {
+    
+        if( $vars['dept_name'] && (strlen($vars['dept_name'])<4) ) {
+            $errors['dept_name']='Dept name must be at least 4 chars.';
+            return false;
+        } elseif ( $vars['dept_name'] ) {
+            $sql='SELECT dept_id FROM '.DEPT_TABLE.' WHERE dept_name='.db_input($vars['dept_name']);
+            if($id)
+                $sql.=' AND dept_id!='.db_input($id);
+                
+            if(db_num_rows(db_query($sql))) {
+                $errors['dept_name']='Department already exist';
+                return false;
+            }
+        }
+    
+        if($this->save($this->getId(),$vars,$errors)){
+            $this->update_membership($vars);
+            $this->reload();
+            return true;
+        }
+        return false;
+    }
+    
+    function update_membership($vars) {
+        $new_members = is_array($vars['dept_members'])?$vars['dept_members']:array();
+        $new_managers = is_array($vars['dept_managers'])?$vars['dept_managers']:array();
+        
+        if ( ($members = $this->getMembers()) && count($members) ) { //updating existing members
+            $changed = 0;
+            foreach( $members as $staff ) {
+                //echo $staff->getName().' ';
+                if ( in_array($staff->getId(), $new_managers) ) { //is in managers
+                    if ($staff->setDeptId($this->getId(), true)) {
+                        $changed++;
+                    }
+                } elseif( in_array($staff->getId(), $new_members) ) { //only normal members
+                    if ($staff->setDeptId($this->getId(), false)) {
+                        $changed++;
+                    }
+                } else { //reset membership
+                    if ($staff->setDeptId(0, false)) {
+                        $changed++;
+                    }
+                }
+            }
+            //echo $changed;
+            unset($staff);
+            unset($members);
+            
+        }
+        
+        foreach( $new_managers as $mid ) {
+            if ( $manager = new Staff($mid) ) {
+                //echo 'make <b>manager</b> '.$manager->getName().' ';
+                $manager->setDeptId($this->getId(), true);
+            }
+        }
+        unset($mid);
+        unset($manager);
+    
+        foreach( $new_members as $memid ) {
+            if ( $staff = new Staff($memid) ) {
+                if ( in_array($staff->getId(), $new_managers) ) { //is in managers
+                    //echo 'make <b>manager</b> '.$staff->getName().' ';
+                    $staff->setDeptId($this->getId(), true);
+                } else { //only normal members
+                    //echo 'make member '.$staff->getName().' ';
+                    $staff->setDeptId($this->getId(), false);
+                }
+            }
+        }
+    }
+    
+    function getFixedId() {
+        return $row['fixed_id'];
+    }
+
+
+    function delete($id, &$errors) {
+        global $cfg;
+        
+        $sql='DELETE FROM '.DEPT_TABLE.' WHERE dept_id='.db_input($id);
+        if(db_query($sql) && ($num=db_affected_rows())){
+            // DO SOME HOUSE CLEANING
+            //Move Dept members 
+            //This should never happen..since delete should be issued only to empty Depts...but check it anyways 
+            $sql = 'UPDATE '.STAFF_TABLE.' SET dept_id='.db_input(0).' AND access_level='.db_input('').' WHERE dept_id='.db_input($id);
+            
+            if (db_query($sql) && ($num2 = db_affected_rows())) {
+                return true;
+            } else {
+                $errors['err'] .= ' no executive affected ';
+                return true;
+            }
+        } else {
+            $errors['err'] .= ' department not deleted, internal error! ';
+            return false;
+        }        
+    }
+    
+    
+    
+
+    function save($id,$vars,&$errors) {
+        global $cfg;
         /*
             $sql=' SET updated=NOW() '.
                  ',ispublic='.db_input($_POST['ispublic']).
@@ -376,27 +421,26 @@ class Dept {
                  ',message_auto_response='.db_input($_POST['message_auto_response']).
                  ',can_append_signature='.db_input(isset($_POST['can_append_signature'])?1:0);
         */
-            $sql=' SET updated=NOW()';
+        $sql=' SET updated=NOW()';
 
-            if($id) {
-                $sql='UPDATE '.DEPT_TABLE.' '.$sql.' WHERE dept_id='.db_input($id);
-                if(!db_query($sql) || !db_affected_rows()) {
-                    $errors['err']='Unable to update '.Format::input($_POST['dept_name']).' Dept. Error occured';
-                }
-                //adding or updating staffs
-                Dept::setDept($vars, $errors);
-            }else{
-                $sql='INSERT INTO '.DEPT_TABLE.' '.$sql.',dept_name='.db_input(Format::striptags($_POST['dept_name'])).',created=NOW()';
-                if(db_query($sql) && ($deptID=db_insert_id())) {
-                    Dept::setDept($vars, $errors);
-                    return $deptID;
-                }
-                
+        if($id) {
+            $sql='UPDATE '.DEPT_TABLE.' '.$sql.' WHERE dept_id='.db_input($id);
+            if(!db_query($sql) || !db_affected_rows()) {
+                $errors['err']='Unable to update, query failure';
+                return false;
+            } else {
+                return true;
+            }
+        }else{
+            $sql='INSERT INTO '.DEPT_TABLE.' '.$sql.',dept_name='.db_input(Format::striptags($vars['dept_name'])).',created=NOW()';
+            if(db_query($sql) && ($deptID=db_insert_id())) {
+                //Dept::setDept($vars, $errors);
+                return $deptID;
+            } else {
                 $errors['err']='Unable to create department. Internal error';
+                return false;
             }
         }
-
-        return $errors?false:true;
     }
     
 
@@ -519,6 +563,14 @@ class Dept {
         }
     }
 */
+    
+    function isSystemDept() {
+        if ( !$this->row['fixed_id'] ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     function get_all_depts() {
         $depts = array();

@@ -105,20 +105,20 @@ class PageNate {
 
         if($start_loop>1){
             $lastspan=($start_loop-$displayed_span>0)?$start_loop-$displayed_span:1;
-            $html .= "\n<a href=\"$file&p=$lastspan\" ><strong>&laquo;</strong></a>";
+            $html .= "\n<a style='padding: 5px; border: 1px solid blue' href=\"$file&p=$lastspan\" ><strong>&laquo;</strong></a>";
         }
         
 		for ($i=$start_loop; $i <= $stop_loop; $i++) {
 			$page = ($i - 1) * $this->limit;
 			if ($i == $this_page) {
-				$html .= "\n<b>[$i]</b>";
+				$html .= "\n<b>$i</b>";
 			} else {
-				$html .= "\n<a href=\"$file&p=$i\" ><b>$i</b></a>";
+				$html .= "\n<a style='padding: 5px; border: 1px solid blue' href=\"$file&p=$i\" ><b>$i</b></a>";
 			}
 		}
         if($stop_loop<$total_pages){
             $nextspan=($stop_loop+$displayed_span>$total_pages)?$total_pages-$displayed_span:$stop_loop+$displayed_span;
-            $html .= "\n<a href=\"$file&p=$nextspan\" ><strong>&raquo;</strong></a>";
+            $html .= "\n<a style='padding: 5px; border: 1px solid blue' href=\"$file&p=$nextspan\" ><strong>&raquo;</strong></a>";
         }
         
 

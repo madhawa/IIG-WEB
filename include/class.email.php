@@ -111,10 +111,9 @@ class Email {
     }
 
     function getNOCmail() {
-        $sql = 'SELECT email_id, email FROM ' . EMAIL_TABLE . ' WHERE email LIKE "%noc%"';
+        $sql = 'SELECT email_id, email FROM ' . EMAIL_TABLE . ' WHERE name LIKE "%noc%"';
         $res = db_fetch_array(db_query($sql));
         $noc_mail = $res['email'];
-        $noc_mail = 'minhaj@vimmaniac.com';
         return $noc_mail;
     }
 

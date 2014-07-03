@@ -210,6 +210,10 @@ class Ticket {
     function get_sla_cause() {
         return $this->row['sla_claim_cause'];
     }
+    
+    function get_sla_duration() {
+        return $this->row['sla_claim_duration'];
+    }
 
     function isOpen() {
         return (strcasecmp($this->getStatus(), 'Open') == 0) ? true : false;
@@ -241,19 +245,20 @@ class Ticket {
     }
 
     function getExtId() {
-        return $this->row['ticketID'];
+        return $this->row['TTID'];
     }
 
     function getEmail() {
         if ($this->row['email']) {
-            $this->row['email'];
+            return $this->row['email'];
         } else {
-            $this->getClient()->getEmail();
+            return $this->getClient()->getEmail();
         }
     }
 
     function getAltEmail() {
-        return $this->row['alt_email'];
+        $mails = Format::sp_trim($this->row['alt_email']);
+        return $mails;
     }
 
     function add_more_cc($more_cc) {
@@ -542,7 +547,17 @@ class Ticket {
     }
 
     function getLastMsgId() {
-        return $this->lastMsgId;
+        if ( $this->lastMsgId ) {
+            return $this->lastMsgId;
+        } else {
+            $sql = 
+                'SELECT msg.msg_id as msg_id,msg.created as created,msg.message as message,msg.source as source,TRUE as ismessage FROM ' . TICKET_MESSAGE_TABLE .' msg WHERE  msg.ticket_id=' . db_input($this->getId()) 
+                . ' UNION ALL ' . 
+                'SELECT resp.msg_id as msg_id,resp.created as created,resp.response as message,resp.staff_name as source,NULL as ismessage FROM ' . TICKET_RESPONSE_TABLE . ' resp  WHERE  resp.ticket_id=' . db_input($this->getId()) . ' ORDER BY created DESC LIMIT 1';
+            $msgres = db_query($sql);
+            $row = db_fetch_array($msgres);
+            return $row['msg_id'];
+        }
     }
 
     //SET
@@ -1042,16 +1057,21 @@ class Ticket {
     function getConversations() {
         //now appending all previous conversations
         //baby dont look below, you will be lost in those inline styles
+        $msg_style = 'style="background-color: #C3D9FF;font-size: 12px;font-weight: bold;line-height: 24px;padding: 1px 1px 1px 5px;text-align: left;border-bottom: 1px solid;color: #3E3E3E;text-decoration: none;"';
+        $resp_style = 'style="background-color: #FFE0B3;font-size: 12px;font-weight: bold;line-height: 24px;padding: 1px 1px 1px 5px;text-align: left;border-bottom: 1px solid;color: #3E3E3E;text-decoration: none;"';
+        
         $html = '<h3 align="center">All conversations(message(client) and response(NOC))</h3>';
         $html .= '<div style="margin-left: auto; margin-right: auto;">';
         //get messages
-        $sql = 'SELECT msg.msg_id,msg.created,msg.message,count(attach_id) as attachments  FROM ' . TICKET_MESSAGE_TABLE . ' msg ' .
-                ' LEFT JOIN ' . TICKET_ATTACHMENT_TABLE . " attach ON  msg.ticket_id=attach.ticket_id AND msg.msg_id=attach.ref_id AND ref_type='M' " .
-                ' WHERE  msg.ticket_id=' . db_input($this->getId()) .
-                ' GROUP BY msg.msg_id ORDER BY created';
+        $sql = 
+            'SELECT msg.msg_id as msg_id,msg.created as created,msg.message as message,msg.source as source,TRUE as ismessage FROM ' . TICKET_MESSAGE_TABLE .' msg WHERE  msg.ticket_id=' . db_input($this->getId()) 
+            . ' UNION ALL ' . 
+            'SELECT resp.msg_id as msg_id,resp.created as created,resp.response as message,resp.staff_name as source,NULL as ismessage FROM ' . TICKET_RESPONSE_TABLE . ' resp  WHERE  resp.ticket_id=' . db_input($this->getId()) . ' ORDER BY created DESC';
         $msgres = db_query($sql);
         while ($msg_row = db_fetch_array($msgres)) {
-            $html .= '<table align="center" cellspacing="0" cellpadding="1" width="100%" border=0 style="margin: 10px 0 5px;-moz-border-bottom-colors: none;-moz-border-left-colors: none;-moz-border-right-colors: none;-moz-border-top-colors: none;border-color: #ADADAD; border-image: none; border-style: solid solid none;border-width: 1px 1px medium;"><tr><th style="background-color: #C3D9FF;font-size: 12px;font-weight: bold;line-height: 24px;padding: 1px 1px 1px 5px;text-align: left;border-bottom: 1px solid;color: #3E3E3E;text-decoration: none;">' . Format::db_daydatetime($msg_row['created']) . '</th></tr><tr><td style="background-color: #FAFAFA;border-bottom: 1px solid;padding: 5px;color: #3E3E3E;font-size: 12px;text-decoration: none;">' . Format::display($msg_row['message']) . '&nbsp;</td></tr></table>';
+            $style = $msg_row['ismessage']?$msg_style:$resp_style;
+            $html .= '<table align="center" cellspacing="0" cellpadding="1" width="100%" border=0 style="margin: 10px 0 5px;-moz-border-bottom-colors: none;-moz-border-left-colors: none;-moz-border-right-colors: none;-moz-border-top-colors: none;border-color: #ADADAD; border-image: none; border-style: solid solid none;border-width: 1px 1px medium;"><tr><th '.$style.'>' . Format::db_daydatetime($msg_row['created']) . ' from ' . $msg_row['source'] . '</th></tr><tr><td style="background-color: #FAFAFA;border-bottom: 1px solid;padding: 5px;color: #3E3E3E;font-size: 12px;text-decoration: none;">' . Format::display($msg_row['message']) . '&nbsp;</td></tr></table>';
+            /*
             //get answers for messages
             $sql = 'SELECT resp.*,count(attach_id) as attachments FROM ' . TICKET_RESPONSE_TABLE . ' resp ' .
                     ' LEFT JOIN ' . TICKET_ATTACHMENT_TABLE . " attach ON  resp.ticket_id=attach.ticket_id AND resp.response_id=attach.ref_id AND ref_type='R' " .
@@ -1061,6 +1081,7 @@ class Ticket {
             while ($resp_row = db_fetch_array($resp)) {
                 $html .= '<table align="center" cellspacing="0" cellpadding="1" width="100%" border=0 style="margin: 10px 0 5px;-moz-border-bottom-colors: none;-moz-border-left-colors: none;-moz-border-right-colors: none;-moz-border-top-colors: none;border-color: #ADADAD; border-image: none; border-style: solid solid none;border-width: 1px 1px medium;"><tr><th style="background-color: #FFE0B3;font-size: 12px;font-weight: bold;line-height: 24px;padding: 1px 1px 1px 5px;text-align: left;border-bottom: 1px solid;color: #3E3E3E;text-decoration: none;">' . Format::db_daydatetime($resp_row['created']) . '&nbsp;-&nbsp;' . $resp_row['staff_name'] . '</th></tr><tr><td style="background-color: #FAFAFA;border-bottom: 1px solid;padding: 5px;color: #3E3E3E;font-size: 12px;text-decoration: none;">' . Format::display($resp_row['response']) . '</td></tr></table>';
             }
+            */
         }
         $html .= '</div>';
         return $html;
@@ -1072,10 +1093,10 @@ class Ticket {
         $html .= '<div style="margin-left: auto; margin-right: auto;">';
         //get messages
         $sql = 'SELECT * FROM ' . TICKET_NOTE_TABLE . ' note WHERE  note.ticket_id=' . db_input($this->getId()) .
-                ' GROUP BY note.note_id ORDER BY created ASC';
+                ' GROUP BY note.note_id ORDER BY created DESC';
         $noteres = db_query($sql);
         while ($note_row = db_fetch_array($noteres)) {
-            $html .= '<table align="center" cellspacing="0" cellpadding="1" width="100%" border=0 style="margin: 10px 0 5px;-moz-border-bottom-colors: none;-moz-border-left-colors: none;-moz-border-right-colors: none;-moz-border-top-colors: none;border-color: #ADADAD; border-image: none; border-style: solid solid none;border-width: 1px 1px medium;"><tr><th style="background-color: #C3D9FF;font-size: 12px;font-weight: bold;line-height: 24px;padding: 1px 1px 1px 5px;text-align: left;border-bottom: 1px solid;color: #3E3E3E;text-decoration: none;">' . Format::db_daydatetime($note_row['created']) . ' from ' . $note_row['source'] . ' title: ' . $note_row['title'] . '</th></tr><tr><td style="background-color: #FAFAFA;border-bottom: 1px solid;padding: 5px;color: #3E3E3E;font-size: 12px;text-decoration: none;">' . Format::display($note_row['note']) . '&nbsp;</td></tr></table>';
+            $html .= '<table align="center" cellspacing="0" cellpadding="1" width="100%" border=0 style="margin: 10px 0 5px;-moz-border-bottom-colors: none;-moz-border-left-colors: none;-moz-border-right-colors: none;-moz-border-top-colors: none;border-color: #ADADAD; border-image: none; border-style: solid solid none;border-width: 1px 1px medium;"><tr><th style="background-color: #C3D9FF;font-size: 12px;font-weight: bold;line-height: 24px;padding: 1px 1px 1px 5px;text-align: left;border-bottom: 1px solid;color: #3E3E3E;text-decoration: none;">' . Format::db_daydatetime($note_row['created']) . ' from ' . $note_row['source'] .'</th></tr><tr><td style="background-color: #FAFAFA;border-bottom: 1px solid;padding: 5px;color: #3E3E3E;font-size: 12px;text-decoration: none;">' .'Title: '. Format::display($note_row['title']) . '</td></tr><tr><td style="background-color: #FAFAFA;border-bottom: 1px solid;padding: 5px;color: #3E3E3E;font-size: 12px;text-decoration: none;">' . 'Note: '. Format::display($note_row['note']) . '</td></tr></table>';
         }
         $html .= '</div>';
         return $html;
@@ -1359,7 +1380,7 @@ class Ticket {
                 ',messageId=' . db_input($msgid) .
                 ',message=' . db_input(Format::striptags($msg)) . //Tags/code stripped...meaning client can not send in code..etc
                 ',headers=' . db_input($headers) . //Raw header.
-                ',source=' . db_input($source) .
+                ',source=' . db_input($thisuser->getName()) .
                 ',ip_address=' . db_input($_SERVER['REMOTE_ADDR']);
 
         if (db_query($sql) && ($msgid = db_insert_id())) {
@@ -1521,6 +1542,7 @@ class Ticket {
 
                     $recipients = $more_cc;
                     $recipients[] = $this->getEmail();
+                    $recipients[] = $noc_mail;
                     $recipients = array_unique($recipients);
                     $recipients = implode(',', $recipients);
 
@@ -1604,8 +1626,10 @@ class Ticket {
                         $attachments = null;
                         $to_header = $noc_mail;
                         $from_header = sprintf('"%s"<%s>',$thisuser->getName(),$thisuser->getEmail());
-
-                        $more_cc = explode(',', $this->getInternalCc());
+                        
+                        if ( $internal_cc = Format::sp_trim($this->getInternalCc()) ) {
+                            $more_cc = explode(',', $internal_cc);
+                        }
                         $more_cc[] = $thisuser->getEmail();
                         $more_cc = array_unique($more_cc);
 
@@ -1617,15 +1641,19 @@ class Ticket {
                         //debug
                         /*
                           echo '<pre>';
+                          echo 'cc:';
                           print_r($more_cc);
                           echo '</pre>';
                           echo '<pre>';
+                          echo 'recp:';
                           print_r($recipients);
                           echo '</pre>';
                           echo '<pre>';
+                          echo 'to:';
                           echo $to_header;
                           echo '</pre>';
                           echo '<pre>';
+                          echo 'from:';
                           echo $from_header;
                           echo '</pre>';
                           echo $subj;
@@ -1634,7 +1662,7 @@ class Ticket {
                           exit;
                          */
                         //debug
-                        //$email->send($recipients, $subj, $body, $attachments, $more_cc, $from_header, $to_header);
+                        $email->send($recipients, $subj, $body, $attachments, $more_cc, $from_header, $to_header);
                     }
                 }
             }
@@ -2069,13 +2097,15 @@ class Ticket {
         if (db_query($sql)) {
             if ($var['note']) {
                 $ticket = new Ticket($ticket_id);
-                $ticket->postNote('Ticket updated by ' . $thisuser->getName(), $var['note'], false);
+                $ticket->postResponse($ticket->getLastMsgId(), $var['note'], '', null, false);
                 //$ticket->postResponse('Ticket updated by ' . $thisuser->getName(), $var['note'], false);
             }
 
             $ticket_b = $ticket; //before update
 
             $this->reload(); //reload after update
+            
+            //$this->postResponse($var['msg_id'], $var['note'], '', null, false);
 
             if (file_exists(TEMPLATE_DIR . 'email.ticket-edit.tpl.html') && file_exists(TEMPLATE_DIR . 'ticket-info.tpl.html')) {
                 $body = file_get_contents(TEMPLATE_DIR . 'email.ticket-edit.tpl.html');
@@ -2108,6 +2138,8 @@ class Ticket {
 
                     $cc = array();
                     $noc_mail = Email::getNOCmail();
+                    
+                    /*
                     $cc = explode(',', $this->getAltEmail());
                     $cc[] = $this->get_raiser_email();
                     $cc[] = $this->getEmail()?$this->getEmail():$this->getClient()->getEmail();
@@ -2115,6 +2147,22 @@ class Ticket {
                     $cc = array_unique($cc);
 
                     $recipients = $cc;
+                    $recipients[] = $noc_mail;
+                    $recipients = array_unique($recipients);
+                    $recipients = implode(',', $recipients);
+                    */
+                    
+                    $more_cc = array();
+                    $more_cc = explode(',', $this->getAltEmail());
+                    $more_cc[] = $noc_mail;
+                    $more_cc[] = $this->getEmail();
+                    if ($this->get_raiser_email())
+                        $more_cc[] = $this->get_raiser_email();
+                    //$more_cc[] = $this->getEmail();
+                    $more_cc = array_unique($more_cc);
+
+                    $recipients = $more_cc;
+                    $recipients[] = $this->getEmail();
                     $recipients[] = $noc_mail;
                     $recipients = array_unique($recipients);
                     $recipients = implode(',', $recipients);
@@ -2147,6 +2195,78 @@ class Ticket {
             return true;
         } else {
             $errors['err'] = 'ticket update failure';
+            return false;
+        }
+    }
+        
+    //set tt id specific to 1asiaahl
+    function set_tt_id($client_id, $cin, $ticket=null) {
+        $today = date('dmy');
+        if ( is_object($ticket) ) {
+            $curdate = trim($ticket->getCreateDate());
+            $temp = preg_split("/\s+/", $curdate);
+            $sql = 'SELECT TTID FROM '.TICKET_TABLE.' ticket WHERE DATE(created)='.db_input($temp[0]).' AND client_id='.db_input($client_id);
+        } else {
+            $sql = 'SELECT TTID FROM '.TICKET_TABLE.' ticket WHERE DATE(created)=CURDATE() AND client_id='.db_input($client_id);
+        }
+        if ( $res = db_query($sql) ) {
+            $num_1 = db_num_rows($res)+1;
+            
+            $num_2 = 0;
+            
+            $test = array();
+            $rows = db_assoc_array($res);
+            if ( $rows && count($rows) ) {
+                foreach( $rows as $r ) {
+                    if ($r['TTID']) {
+                        $parts = explode('-', $r['TTID']);
+                        $num_2 = $parts[2];
+                        $test[] = $num_2;
+                    }
+                }
+                
+                $num_2 = max($test)+1;
+            }
+            $num = max($num_1, $num_2);
+            
+            $num = (strlen($num)==1)?'0'.$num:$num;
+            
+            $cin_digit = '';
+            if ($cin) {
+                $temp = explode('/', $cin);
+                $cin = $temp[0];
+                $cin_digit = substr($cin, -4, 4);
+            } else {
+                $cin_digit = 'XXXX';
+            }
+            
+            $tt_id = $today.'-'.$cin_digit.'-'.$num;
+            
+            return $tt_id;
+            
+        } else {
+            return null;
+        }
+    }
+    
+    function save_tt_id() {
+        $client_id = $this->getClientId();
+        $cin = $this->getCINValue();
+        
+        $ttid = self::set_tt_id($client_id, $cin, $this);
+        return $this->update_a_field('TTID', $ttid);
+        
+    }
+    
+    
+    function update_a_field($name, $value) {
+        if ( !$this->getId() || !$name || !$value ) {
+            return false;
+        }
+        $sql = 'UPDATE '.TICKET_TABLE.' SET '.$name.'='.db_input($value).' WHERE ticket_id='.db_input($this->getId());
+        if ( db_query($sql) && db_affected_rows() ) {
+            return true;
+        } else {
             return false;
         }
     }
@@ -2311,11 +2431,18 @@ class Ticket {
 
         //We are ready son...hold on to the rails.
         $extId = Ticket::genExtRandID();
-        //generate ticket id in a format for client
-        $tt_id = Ticket::gen_tt_id($_POST['client_id'], $var['cin']);
+        $TTID = Ticket::set_tt_id($var['client_id'], $var['cin']);
+        if( !$extId || !$TTID ) {
+            $errors['err'] = 'Internal error, cannot generate id';
+            return false;
+        }
 
         $client_id = $var['client_id'];
         $client = new Client($client_id);
+        if ( !$client->getId() ) {
+            $errors['err'] = 'no client selected';
+            return false;    
+        }
         $client_name = $client->getName();
         $client_email = $client->getEmail();
 
@@ -2323,6 +2450,7 @@ class Ticket {
         $now = date('Y-m-d H:i:s');
         $sql = 'INSERT INTO ' . TICKET_TABLE . ' SET created=' . db_input($now) .
                 ',ticketID=' . db_input($extId) .
+                ',TTID=' . db_input($TTID) .
                 ',client_id=' . db_input($client_id) .
                 ',raiser_name=' . db_input($_POST['raiser_name']) .
                 ',raiser_phone=' . db_input($_POST['raiser_phone']) .
@@ -2332,7 +2460,7 @@ class Ticket {
                 ',topic_id=' . db_input($topicId) .
                 ',priority_id=' . db_input($priorityId) .
                 ',email=' . db_input(Format::striptags($var['email'])) .
-                ',alt_email=' . db_input(Format::striptags($var['alt_email'])) .
+                ',alt_email=' . db_input(Format::sp_trim($var['alt_email'])) .
                 ',cin=' . db_input(Format::striptags($var['cin'])) .
                 ',name=' . db_input($client_name) .
                 ',alt_contact_name=' . db_input(Format::striptags($var['alt_contact_name'])) .
@@ -2393,7 +2521,10 @@ class Ticket {
                     $subj = $ticket->renderTemplate($subj);
 
                     $body_data = array(
-                        '%message' => $var['message']
+                        '%message' => $var['message'],
+                        '%name' => $ticket->getClient()->getName(),
+                        '%email' => $ticket->getEmail(),
+                        '%phone' => $ticket->getClient()->getPhone()
                     );
                     
                     $body = $ticket->renderTemplate($body, $body_data);
@@ -2458,7 +2589,8 @@ class Ticket {
                     $body_data = array(
                         '%message' => $var['message'],
                         '%signature' => $thisuser->getSignatureForTemplate(),
-                        '%email' => $ticket->getClient()->getEmail(),
+                        '%name' => $ticket->getClient()->getName(),
+                        '%email' => $ticket->getEmail(),
                         '%phone' => $ticket->getClient()->getPhone()
                     );
                     $body = $ticket->renderTemplate($body, $body_data);
@@ -2472,10 +2604,10 @@ class Ticket {
 
                         //building cc list
                         $cc = array();
-                        $cc = explode(',', $var['alt_email']);
+                        $cc = explode(',', $ticket->getAltEmail());
                         $noc_mail = Email::getNOCmail();
                         $cc[] = $noc_mail;
-                        $cc[] = $var['raiser_email'];
+                        $cc[] = Format::sp_trim($ticket->get_raiser_email());
 
                         $attachments = null;
 
@@ -2487,12 +2619,14 @@ class Ticket {
 
                         //for emails to be sent into cc list, you have to add them into recipients list
                         $recipients = $cc;
-                        $recipients[] = $ticket->getEmail();
+                        $recipients[] = Format::sp_trim($ticket->getEmail());
+                        $recipients[] = $noc_mail;
 
                         //now cleansing
                         $cc = array_unique($cc);
                         $recipients = array_unique($recipients);
                         $recipients = trim(implode(',', $recipients), ',');
+                        
                         /*
                           //debug
                           echo '<pre>';
@@ -2506,10 +2640,13 @@ class Ticket {
                           echo '</pre>';
                           echo $subj;
                           echo '<br>';
+                          echo 'noc is: '.$noc_mail.'<br>';
                           echo $body;
                           exit;
                           //debug
-                         */
+                          */
+                          
+                         
                         $email->send($recipients, $subj, $body, $attachments, $cc, $from_header, $to_header);
                     }
                 }

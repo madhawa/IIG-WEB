@@ -20,7 +20,7 @@ $loggedin_staff_dept_id = (string)($thisuser->getDeptId());
 $page = ($_GET['p'] && is_numeric($_GET['p'])) ? $_GET['p'] : 1;
 $pagelimit = $_GET['limit'] ? $_GET['limit'] : $thisuser->getPageLimit();
 $pagelimit = $pagelimit ? $pagelimit : PAGE_LIMIT; //true default...if all fails.
-$total = db_count("SELECT count(DISTINCT order_id) FROM " . ORDER_TABLE . " WHERE dept_id=" . $loggedin_staff_dept_id);
+$total = db_count("SELECT count(DISTINCT order_id) FROM " . ORDER_TABLE);
 
 $pageNav = new Pagenate($total, $page, $pagelimit);
 $pageNav->setURL('orders.php', $qstr . '&sort=' . urlencode($_REQUEST['sort']) . '&order=' . urlencode($_REQUEST['order']));
@@ -49,7 +49,7 @@ if ( $_POST['order_search_by'] == 'client_id' ) {
 
 //mysql_query($sql) or die(mysql_error());
 if ($orders_res = db_query($sql)) {
-$showing = db_num_rows($orders_res) ? $pageNav->showing() : "";
+    $showing = db_num_rows($orders_res) ? $pageNav->showing() : "";
 }
 else {
     $errors['err'] = 'no orders found';
@@ -66,9 +66,8 @@ else {
 <?php if ($warn) { ?>
     <p id="warnmessage"><?php   echo   $warn ?></p>
 <?php } ?>
-<br>
-<br>
-<br>
+
+<!--
 <div id="search_order">
     <?php
         $sql = 'SELECT client_id, client_name FROM ' . CLIENT_TABLE ;
@@ -126,54 +125,16 @@ else {
     </script>
     
 </div>
+-->
 
-<div id="orders_list">
+<div>
     <table>
         <tr>
             <td class="msg" >&nbsp;<b><?php   echo   $showing ?>&nbsp;&nbsp;&nbsp;<?php   echo   $results_type ?></b></td>
             <td>
-                <a href=""><img src="images/refresh.gif" alt="Refresh" border=0></a>
             </td>
         </tr>
     </table>
-    <!--
-    <div class="color_code">
-        <div class="col_code_inline" id="pending_col_code">
-        </div>
-        <span class="col_code_inline">
-            pending
-        </span>
-        <br>
-        
-        <div class="col_code_inline" id="accepted_col_code">
-        </div>
-        <span class="col_code_inline">
-            accepted
-        </span>
-        <br>
-        
-        <div class="col_code_inline" id="rejected_col_code">
-        </div>
-        <span class="col_code_inline">
-            rejected
-        </span>
-        <br>
-        
-        <div class="col_code_inline" id="cancelled_col_code">
-        </div>
-        <span class="col_code_inline">
-            cancelled
-        </span>
-        <br>
-        
-        <div class="col_code_inline" id="scp_col_code">
-        </div>
-        <span class="col_code_inline">
-            created by asiaahl staff
-        </span>
-    </div>
-    -->
-
         <form action="orders.php" method="POST" name='orders'>
             <input type="hidden" name="a" value="mass_process" >
                     <table width="100%" border="0" class="dtable" align="center">
@@ -183,7 +144,6 @@ else {
                                 <a href="orders.php?sort=date&order=<?php   echo   $negorder ?><?php   echo   $qstr ?>" title="Sort By Date <?php   echo   $negorder ?>">Date</a></th>
                             <th width="15%">Status</th>
                             <th width="20%">Client name</th>
-                            <th width="20%">Delete</th>
                         </tr>
                         <?php
                         $class = "row1";
@@ -232,18 +192,6 @@ else {
                                 <?php
                                 $class = ($class == 'row2') ? 'row1' : 'row2';
                             } ?>
-                            <tr>
-                                <td colspan="4"></td>
-                                <td><input type="submit" name="delete" value="delete"></td>
-                            </tr>
-                                <script type="text/javascript">
-                                    $('[name="delete"]').click(function(event) {
-                                        var r = window.confirm("are you suuuuuureeeeeeee?????");
-                                        if ( r != true ) {
-                                            event.preventDefault();
-                                        }
-                                    });
-                                </script>
                         <?php } else { //not orders found!! 
                             ?>
 

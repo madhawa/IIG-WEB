@@ -10,7 +10,7 @@ $t=Format::input($_POST['passwd']?$_POST['lticket']:$_GET['t']);
 <p style="float: right"><a href="./scp">go to 1asia-ahl executive login</a></p>
 <div class="clear"></div>
 -->
-<h1 id="login_header" align="center">1Asia Alliance Support Center</h1>
+<h1 align="center">1Asia Alliance Support Center</h1>
 <br>
 <br>
 
@@ -29,7 +29,7 @@ $t=Format::input($_POST['passwd']?$_POST['lticket']:$_GET['t']);
         <p style="color: #990033; font-weight: bold; text-align: center"><?php    echo   $loginmsg  ?></p>
         <br>
     <?php  }  ?>
-	<form action="login.php" method="post">
+	<form action="" method="post">
         <input type="hidden" name="do" value="clientlogin" />
         <table border=0 align="center">
             <tr>
@@ -47,7 +47,7 @@ $t=Format::input($_POST['passwd']?$_POST['lticket']:$_GET['t']);
             </tr>
             <tr>
                 <td>
-                    <input style="margin-top: 30px" class="button" type="submit" name="submit" value="Login">
+                    <input style="margin-top: 30px; padding: 10px 20px" class="save" type="submit" name="submit" value="Login">
                 </td>
             </tr>
         </table>
@@ -55,11 +55,15 @@ $t=Format::input($_POST['passwd']?$_POST['lticket']:$_GET['t']);
     <span id="login_report"></span>
 </div>
 <script type="text/javascript">
+    $('body').css({ 'background': '' });
+    $('body').css({ 'background-image': 'linear-gradient(#0594BE, #023149)' });
+    //$('#container').css({ 'background-image': 'linear-gradient(#0594BE, #023149)' });
     $('div#loginBox').css({
         'border': '1px solid',
         'padding': '10px 40px 50px 40px',
         'display': 'table',
         'margin-left': 'auto',
-        'margin-right': 'auto'
+        'margin-right': 'auto',
+        'background-color': '#0594BE'
         });
 </script>

@@ -67,4 +67,7 @@ endif;
     $('table.dtable th').css({
         'padding': '10px'
     });
+    $('table.dtable td').css({
+        'padding': '10px'
+    });
 </script>

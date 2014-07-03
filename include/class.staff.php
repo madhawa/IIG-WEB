@@ -101,7 +101,7 @@ class Staff {
     
     //except super admins
     function get_all_staffs() {
-        $sql = 'SELECT * FROM '.STAFF_TABLE.' ORDER BY firstname ASC';
+        $sql = 'SELECT * FROM '.STAFF_TABLE.' ORDER BY dept_id, firstname ASC';
         $staffs = array();
         if ( ($res=db_query($sql)) && db_num_rows($res) ) {
             while( $row = db_fetch_array($res) ) {
@@ -188,16 +188,28 @@ class Staff {
         return new Dept($this->getDeptId());
     }
     
-    function setDeptId($new_dept_id) {
-        if ( ( $this->getDeptId() != $new_dept_id ) && Dept::getNameById($new_dept_id) ) { //checking validity of dept id
-            $sql = 'UPDATE ' . STAFF_TABLE . ' SET dept_id=' . db_input($new_dept_id) . ' WHERE staff_id=' . db_input($this->getId());
+    function setDeptId($new_dept_id, $manager=false) {
+        if ( $this->isSuperAdmin() ) {
+            return false;
+        }
+        
+        $new_access_level = $manager?ACCESS_LEVEL_MANAGER:ACCESS_LEVEL_STAFF;
+        $staff_access_level = $this->isManager()?ACCESS_LEVEL_MANAGER:ACCESS_LEVEL_STAFF;
+        
+        if ( ( $this->getDeptId() != $new_dept_id ) || ( $new_access_level != $staff_access_level ) ) { //dont write db if already in
+            $sql = 'UPDATE ' . STAFF_TABLE . ' SET dept_id=' . db_input($new_dept_id) . ', access_level='.db_input($new_access_level).' WHERE staff_id=' . db_input($this->getId());
             
             if ( db_query($sql) && db_affected_rows() ) {
+                $this->reload();
+                //echo '<b>changed</b><br>';
                 return true;
             } else {
+                mysql_query($sql) or die(mysql_error());
+                //echo 'changed not'.$sql.db_affected_rows().'<br>';
                 return false;
             }
         } else {
+            //echo '<i>all same</i><br>';
             return false;
         }
     }
@@ -505,6 +517,8 @@ class Staff {
     function create($vars, &$errors) {
         return Staff::save(0, $vars, $errors);
     }
+    
+
 
     function save($id, $vars, &$errors) {
 

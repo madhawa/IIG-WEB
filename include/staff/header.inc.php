@@ -24,12 +24,13 @@ if (!defined('OSTSCPINC') || !is_object($thisuser) || !$thisuser->isStaff() || !
         <link rel="stylesheet" href="css/transmission.css" type="text/css" media="screen"/>
         <link rel="stylesheet" href="css/services.css" type="text/css" media="screen"/>
 
-<link rel="stylesheet" href="../styles/jquery-ui.css" type="text/css" media="screen" />
-<link rel="stylesheet" media="all" type="text/css" href="../css/jquery-ui-timepicker-addon.css" />
-<script type="text/javascript" src="../js/jquery-2.1.1.js"></script>
-<script type="text/javascript" src="../js/jquery-ui.min.js"></script>
-<script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
-<script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+        <link rel="stylesheet" href="../styles/jquery-ui.css" type="text/css" media="screen" />
+        <link rel="stylesheet" media="all" type="text/css" href="../css/jquery-ui-timepicker-addon.css" />
+        <script type="text/javascript" src="../js/jquery-2.1.1.js"></script>
+        <script type="text/javascript" src="../js/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="../js/jquery-ui-timepicker-addon.js"></script>
+        <script type="text/javascript" src="../js/jquery-ui-sliderAccess.js"></script>
+<!--         <script type="text/javascript" src="../js/jquery.elastic.source.js"></script> -->
         
         <script type="text/javascript" src="../js/json2.js" ></script>
         <script type="text/javascript" src="js/ajax.js"></script>
@@ -44,7 +45,7 @@ if (!defined('OSTSCPINC') || !is_object($thisuser) || !$thisuser->isStaff() || !
 
         <?php if ($cfg && $cfg->getLockTime()) { //autoLocking enabled. ?>
             <script type="text/javascript" src="js/autolock.js" charset="utf-8"></script>
-<?php } ?>
+        <?php } ?>
     </head>
     <body>
         <?php if ($sysnotice) { ?>
@@ -73,7 +74,8 @@ if (!defined('OSTSCPINC') || !is_object($thisuser) || !$thisuser->isStaff() || !
 
             </noscript>
             <div id="header">
-                <?php echo 'last refresh time: ' . date('D, d M Y g:i:s A', time()); ?>
+                <p style="float: right; font-size: 0.6em"><a href="mailto:polarglow06@gmail.com" title="email to the developer/maintainer"><?php echo PORTAL_NAME.' version '.VERSION; ?></a></p>
+                <?php echo '<span class="msg">this website works best in mozilla filefox with javascript</span>'; ?>
                 <?php if ($img_name) { ?>
                     <img src="<?php echo $img_name; ?>" alt="department name">
                     <?php } ?>

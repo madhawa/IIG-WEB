@@ -462,7 +462,7 @@ class Client {
         $new_user_id = Sys::unique_id();
 
         //transform client type array to string
-        $client_type = implode(',', $vars['client_type']);
+        //$client_type = implode(',', $vars['client_type']);
 
         if (!$errors) {
             $sql = ' SET updated=NOW() ' .
@@ -514,7 +514,7 @@ class Client {
             $sql_del = 'DELETE FROM ' . SERVICE_CIN_TABLE . ' WHERE client_id=' . db_input($id);
             if ( !db_query($sql_del) ) {
                 $errors['err'] .= ' oh man! cin cleansing failure b4 saving!! do something!!! ';
-            } else { //onlt after clearing
+            } elseif ( !empty($vars['cin_no']) ) { //onlt after clearing
                 foreach( $vars['cin_no'] as $key=>$cin ) {
                     //upload image
                     $data = array(

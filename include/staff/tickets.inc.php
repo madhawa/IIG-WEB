@@ -240,6 +240,7 @@ $canDelete = $thisuser->canDeleteTickets();
 $canClose = $thisuser->canCloseTickets();
 $basic_display = !isset($_REQUEST['advance_search']) ? true : false;
 
+echo 'last refresh time: ' . date('D, d M Y g:i:s A', time());
 //YOU BREAK IT YOU FIX IT.
 ?>
 <div>
@@ -365,7 +366,7 @@ for ($x = 5; $x <= 25; $x += 5) {
 <div id="deep_search">
 <h4 align="center">deep search</h4>
 <form action="" method="post">
-    <input type="hidden" name="action" value="sort_tickets">
+    <input type="hidden" name="action" value="deep_search">
 <!--     <select style="margin-left: 100px" name="sort_by">
         <option value="">Sort tickets by:</option>
         <option value="Customer" <?php if ($sort_by == 'Customer') echo 'selected'; ?>>Customer</option>
@@ -459,14 +460,16 @@ $('#deep_search').css({
     'position': 'fixed'
 });
 
-$('div#deep_search').hide()
+//কিছু বালের বিউটিফিকেশন
+$('div#deep_search').hide();
 $('button[name="deep_search"]').click(function(event) {
     $('div#deep_search').toggle('slide');
 });
 
 //reload
 var Intr = setInterval(function() {
-    window.location.reload(false); //cached reloading
+    var url = window.location.href;
+    window.location.href = window.location.href; //cached reloading
 }, 1000*60);
 /*
     //first time at page loading
@@ -496,7 +499,6 @@ var Intr = setInterval(function() {
 </script>
 <!-- SEARCH FORM END -->
 <h3 align="center"><?php echo $showing.' : '.$results_type ?> <a style="margin-left: 50px" href="">refresh</a></h3>
-<hr>
 <div style="margin-bottom:20px">
 <!--     <table width="100%" border="0" cellspacing=0 cellpadding=0 align="center">
         <tr>
@@ -511,27 +513,36 @@ var Intr = setInterval(function() {
             <input type="hidden" name="a" value="mass_process" >
             <input type="hidden" name="status" value="<?php echo $statusss ?>" >
             <tr><td>
-                    <table width="100%" border="0" cellspacing=0 cellpadding=2 class="dtable" align="center">
+                    <table width="" border="0" cellspacing=0 cellpadding=2 class="dtable" align="center">
                         <tr>
-                            <?php if ($canDelete || $canClose) { ?>
-                                <th width="8px" style="padding: 10px">&nbsp;</th>
-                            <?php } ?>
+                            <th width="30" style="padding: 10px"><a href="tickets.php?sort=ID&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By Ticket ID <?php echo $negorder ?>">ID</a></th>
+
                             <th width="70" >
                                 <a href="tickets.php?sort=ID&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By Ticket ID <?php echo $negorder ?>">Customer</a>
                             </th>
-                            <th width="70">
-                                <a href="tickets.php?sort=date&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By Date <?php echo $negorder ?>">Create Date</a>
+
+                            <th width="150"><a href="tickets.php?sort=date&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By Date <?php echo $negorder ?>">Create Date</a>
                             </th>
-                            <th><a href="tickets.php?sort=subject&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By Subject <?php echo $negorder ?>">subject</a></th>
-                            <th><a href="tickets.php?sort=root_cause&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By Root cause <?php echo $negorder ?>">Root Cause</a></th>
-                            <th><a href="tickets.php?sort=cin&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By CIN <?php echo $negorder ?>">CIN</a></th>
-                            <th><a href="tickets.php?sort=service_type&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By service type <?php echo $negorder ?>">service type</a></th>
-                            <th><a href="tickets.php?sort=circuit_type&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By circuit type <?php echo $negorder ?>">circuit type</a></th>
-                            <th><a href="tickets.php?sort=sla_claim&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By sla claim <?php echo $negorder ?>">SLA claim</a></th>
-                            <th><a href="tickets.php?sort=created_by_noc&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By source <?php echo $negorder ?>">by noc</a></th>
-                            <th><a href="tickets.php?sort=msgdate&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By Client MEssage Date <?php echo $negorder ?>">Last Message(client)</a></th>
-                            <th><a href="tickets.php?sort=respdate&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By NOC Response Date <?php echo $negorder ?>">Last Response(NOC)</a></th>
-                            <th>assigned to</th>
+
+                            <th width="150"><a href="tickets.php?sort=msgdate&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By Client MEssage Date <?php echo $negorder ?>">Last Message(client)</a></th>
+
+                            <th width="150"><a href="tickets.php?sort=respdate&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By NOC Response Date <?php echo $negorder ?>">Last Response(NOC)</a></th>
+
+                            <th width="150"><a href="tickets.php?sort=subject&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By Subject <?php echo $negorder ?>">subject</a></th>
+
+                            <th width="150"><a href="tickets.php?sort=root_cause&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By Root cause <?php echo $negorder ?>">Root Cause</a></th>
+
+                            <th width="150"><a href="tickets.php?sort=cin&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By CIN <?php echo $negorder ?>">CIN</a></th>
+
+                            <th width="150"><a href="tickets.php?sort=service_type&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By service type <?php echo $negorder ?>">service type</a></th>
+
+                            <th width="150"><a href="tickets.php?sort=circuit_type&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By circuit type <?php echo $negorder ?>">circuit type</a></th>
+
+                            <th width="70"><a href="tickets.php?sort=sla_claim&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By sla claim <?php echo $negorder ?>">SLA claim</a></th>
+
+                            <th width="70"><a href="tickets.php?sort=created_by_noc&order=<?php echo $negorder ?><?php echo $qstr ?>" title="Sort By source <?php echo $negorder ?>">by noc</a></th>
+
+                            <th width="100">assigned to</th>
                         </tr>
                         <?php
                         $class = "row1";
@@ -563,26 +574,23 @@ var Intr = setInterval(function() {
                                 $ticket = new Ticket($row['ticket_id']);
                                 ?>
                                 <tr class="<?php echo $class ?> " id="<?php echo $row['ticket_id'] ?>">
-                                    <?php if ($canDelete || $canClose) { ?>
                                         <td align="center" class="nohover">
-                                            <input type="checkbox" name="tids[]" value="<?php echo $row['ticket_id'] ?>" onClick="highLight(this.value, this.checked);">
+                                            <a href="tickets.php?id=<?php echo $row['ticket_id']; ?>" target="_blank"><?php echo $ticket->getExtId(); ?></a>
+                                            <!-- <input type="checkbox" name="tids[]" value="<?php echo $row['ticket_id'] ?>" onClick="highLight(this.value, this.checked);"> -->
                                         </td>
-                                    <?php } ?>
                                     <td align="center" title="<?php echo $row['email'] ?>" nowrap>
-                                        <a class="Icon <?php echo strtolower($row['source']) ?>Ticket" href="tickets.php?id=<?php echo $row['ticket_id'] ?>"><?php echo $ticket->getName(); ?>
-                                        </a>
+                                        <?php echo $ticket->getClient()->getName(); ?>
                                     </td>
-                                    <td align="center" nowrap><?php echo Format::db_date($row['created']) ?></td>
-                                    <td><a <?php if ($flag) { ?> class="Icon <?php echo $flag ?>Ticket" title="<?php echo ucfirst($flag) ?> Ticket" <?php } ?> href="tickets.php?id=<?php echo $row['ticket_id'] ?>"><?php echo $row['subject'] ?></a>
-                                        &nbsp;<?php echo $row['attachments'] ? "<span class='Icon file'>&nbsp;</span>" : '' ?></td>
+                                    <td align="center" nowrap><?php echo Format::db_date($row['created']); ?></td>
+                                    <td><?php echo $row['lastmessage']?Format::db_date($row['lastmessage']):'N/A'; ?></td>
+                                    <td><?php echo $row['lastresponse']?Format::db_date($row['lastresponse']):'N/A'; ?></td>
+                                    <td><a href="tickets.php?id=<?php echo $row['ticket_id']; ?>" target="_blank"><?php echo $row['subject'] ?></a></td>
                                     <td nowrap><?php echo $ticket->get_root_cause(); ?></td>
-                                    <td nowrap><?php echo $ticket->getCINValue(); ?></td>
-                                    <td nowrap><?php echo $ticket->getCIN()->get_service_type; ?></td>
-                                    <td nowrap><?php echo $ticket->getCIN()->get_circuit_type; ?></td>
+                                    <td nowrap><?php echo $ticket->getCIN()->get_cin_value()?$ticket->getCIN()->get_cin_value():'N/A'; ?></td>
+                                    <td nowrap><?php echo $ticket->getCIN()->get_service_type()?$ticket->getCIN()->get_service_type():'N/A'; ?></td>
+                                    <td nowrap><?php echo $ticket->getCIN()->get_circuit_type()?$ticket->getCIN()->get_circuit_type():'N/A'; ?></td>
                                     <td nowrap><?php echo $ticket->is_sla_ticket() ? 'yes' : 'no'; ?></td>
                                     <td nowrap><?php echo $ticket->isNOCTT() ? 'yes' : 'no'; ?></td>
-                                    <td><?php echo Format::db_date($row['lastmessage']); ?></td>
-                                    <td><?php echo Format::db_date($row['lastresponse']); ?></td>
                                     <td>
                                         <?php
                                         if ($row['staff_id']) {
@@ -611,14 +619,17 @@ var Intr = setInterval(function() {
             if ($num > 0) { //if we actually had any tickets returned.
                 ?>
                 <tr><td style="padding-left:20px">
+                        <!--
                         <?php if ($canDelete || $canClose) { ?>
                             Select:
                             <a href="#" onclick="return select_all(document.forms['tickets'], true)">All</a>&nbsp;
                             <a href="#" onclick="return reset_all(document.forms['tickets'])">None</a>&nbsp;
                             <a href="#" onclick="return toogle_all(document.forms['tickets'], true)">Toggle</a>&nbsp;
                         <?php } ?>
-                        page:<?php echo $pageNav->getPageLinks() ?>
+                        -->
+                        
                     </td></tr>
+                <!--
                 <?php if ($canClose or $canDelete) { ?>
                     <tr><td align="center"> <br>
                             <?php
@@ -655,12 +666,27 @@ var Intr = setInterval(function() {
                                        onClick=' return confirm("Are you sure you want to DELETE selected tickets?");'>
                                    <?php } ?>
                         </td></tr>
-                <?php
-                }
-            }
-            ?>
+                <?php } ?>
+                -->
+            <?php } ?>
         </form>
     </table>
+    <br>
+    <div style="font-size: 1.5em">
+                            page:<?php echo $pageNav->getPageLinks() ?>
+                        </div>
 </div>
 
-<?php
+<script type="text/javascript">
+    $('td').css({
+        'padding-top': '10px',
+        'padding-bottom': '10px'
+    });
+    $('th').css({
+        'text-align': 'center'
+    });
+    $('th a').css({
+        'text-decoration': 'none'
+    });
+    $('th a').addClass('msg');
+</script>

@@ -34,7 +34,7 @@ $title = ($cfg && is_object($cfg)) ? $cfg->getTitle() : 'Support';
         <link rel="stylesheet" href="<?php   echo   ROOT_PATH; ?>css/redactor.css" media="screen">
         <link type="text/css" rel="stylesheet" href="<?php   echo   ROOT_PATH; ?>css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="./js/jquery-1.11.1.min.js"></script>
         <link rel="stylesheet" href="./styles/jquery-ui.css" />
         <script type="text/javascript" src="./js/jquery-ui.min.js"></script>
         

@@ -91,6 +91,31 @@ class Format {
         return nl2br($text);
     }
 
+    //for a stack with multiple emails, it will display each emails with a line break
+    function display_single_email($emails) {
+        $res = '';
+        if ( is_array($emails) ) {
+            $res = implode('<br>', Format::sp_trim($emails));
+        } elseif( is_string($emails) ) {
+            $res = str_replace(',', '<br>', Format::sp_trim($emails));
+        }
+        
+        return $res;
+    }
+    
+    function sp_trim($text) {
+        if ( is_array($text) ) {
+            $text = array_map('Format::sp_trim', $text);
+        } elseif( is_string($text) ) {
+            $text = preg_replace("/\s+/", '', $text);
+            $text = str_replace(';', ',', $text);
+            $text = trim($text);
+            $text = trim($text, ',');
+        }
+        
+        return $text;
+    }
+
     function striptags($string) {
         return strip_tags(html_entity_decode($string)); //strip all tags ...no mercy!
     }

@@ -46,17 +46,22 @@ if ($thistab == 'last_year') {
     }
 } elseif ($thistab == 'current_year') {
     $date_from = $date->format('Y') . '-' . '01' . '-' . '01 00:00:00';
-    $date_to = $date->format('Y-m-') . ($date->format('d')) . ' 23:59:59';
+    $date_to = $date->format('Y-m-d H:i:s');
     $sql = 'SELECT * FROM ' . TICKET_TABLE . ' WHERE client_id=' . db_input($thisuser->getId()) . ' AND created BETWEEN ' . db_input($date_from) . ' AND ' . db_input($date_to);
     $res = db_query($sql);
     $tickets = db_assoc_array($res, true);
-    for ($i = 1; $i <= $date->format('n'); $i++) {
+    $limit = $date->format('n');
+    for ($i = 1; $i <= $limit; $i++) {
         $tickets_matched = 0;
         $date_from = DateTime::createFromFormat('Y-m-d H:i:s', $date->format('Y') . '-' . str_pad($i, 2, '0', STR_PAD_LEFT) . '-' . '01 00:00:00');
         $E = 0;
         $U = 0;
         $M = $date_from->format('t') * 24;
         $date_to = DateTime::createFromFormat('Y-m-d H:i:s', $date->format('Y') . '-' . str_pad($i, 2, '0', STR_PAD_LEFT) . '-' . $date_from->format('t').' 23:59:59');
+        if ( $i == $limit ) {
+            $date_to = $date;
+            $M = $date_to->format('d') * 24;
+        }
         if ( count($tickets) ) {
             foreach ($tickets as $ticket) {
                 $tt = new Ticket($ticket['ticket_id']);
@@ -110,7 +115,7 @@ if ($thistab == 'last_year') {
     $tickets = db_assoc_array($res, true);
     $E = 0;
     $U = 0;
-    $M = $date->format('t') * 24;
+    $M = $date->format('d') * 24;
     if ( count($tickets) ) {
         foreach ($tickets as $ticket) {
             if ( $tt = new Ticket($ticket['ticket_id']) ) {
@@ -153,7 +158,7 @@ if ($thistab == 'last_year') {
                     $U = 0;
                     //$tdf = $date_from;
                     //$tdt = DateTime::createFromFormat('Y-m-d H:i:s', $date_to->format('Y-m-').$date_to->format('t').' 23:59:59');
-                    $M = $date_to->format('t')*24;
+                    $M = $date_to->format('d')*24;
                     foreach ($tickets as $ticket) {
                         if ( $tt = new Ticket($ticket['ticket_id']) ) {
                             $U += $tt->get_outage_duration() / 60;

@@ -14,7 +14,7 @@ $info = ($_POST && $errors) ? Format::input($_POST) : array(); //on error...use 
 <?php } ?>
 </div>
 <div id="new_ticket">
-    <h2 align="center">Create a new ticket on behalf of client</h2>
+    <h2 align="center" class="msg">Create a new ticket on behalf of client</h2>
     <table align="center" border="0" cellspacing=1 cellpadding=2>
         <form action="tickets.php" method="post" enctype="multipart/form-data">
             <input type='hidden' name='a' value='open'>
@@ -23,7 +23,7 @@ $info = ($_POST && $errors) ? Format::input($_POST) : array(); //on error...use 
             <tbody>
                 <tr>
                     <td colspan="2">
-                        <div><h3>Client Info</h3></div>
+                        <div><h3 class="msg">Client Info</h3></div>
                         <hr>
                     </td>
                 </tr>
@@ -32,7 +32,7 @@ $info = ($_POST && $errors) ? Format::input($_POST) : array(); //on error...use 
                         <strong>Search for client:</strong>
                     </td>
                     <td>
-                        <input class="normal" type="text" name="type_client" required>
+                        <input class="normal" type="text" name="type_client" autocomplete="off" required>
                         <div id="search_sug" style="width: 300px; border: 1px solid; z-index: 100">
 
                         </div>
@@ -91,9 +91,10 @@ $info = ($_POST && $errors) ? Format::input($_POST) : array(); //on error...use 
                 <tr>
                     <td colspan="2">
                         <div>
-                            <h3>Ticket raiser info <input class="normal" type="checkbox" name="raiser_info_enable" value=1 <?php if ($info['raiser_info_enable']) echo 'selected'; ?>></h3>
+                            <h3 class="msg">Ticket raiser info</h3>
                         </div>
                         <hr>
+                        <input class="normal" type="checkbox" name="raiser_info_enable" value=1 <?php if ($info['raiser_info_enable']) echo 'selected'; ?>>enable/disable
                     </td>
                 </tr>
                 <tr class="ticket_raiser_info">
@@ -101,7 +102,7 @@ $info = ($_POST && $errors) ? Format::input($_POST) : array(); //on error...use 
                         <strong>Name</strong>
                     </td>
                     <td>
-                        <input class="normal" type="text" name="raiser_name" value="<?php echo $info['raiser_name'] ?>" required>
+                        <input class="normal" type="text" name="raiser_name" value="<?php echo $info['raiser_name'] ?>">
                     </td>
                 </tr>
                 <tr class="ticket_raiser_info">
@@ -109,19 +110,19 @@ $info = ($_POST && $errors) ? Format::input($_POST) : array(); //on error...use 
                         <strong>Contact Number</strong>
                     </td>
                     <td>
-                        <input class="normal" type="text" name="raiser_phone" value="<?php echo $info['raiser_phone'] ?>" required>
+                        <input class="normal" type="text" name="raiser_phone" value="<?php echo $info['raiser_phone'] ?>">
                     </td>
                 </tr>
                 <tr class="ticket_raiser_info">
                     <td><strong>Email address</strong></td>
                     <td>
-                        <input class="normal" type="text" name="raiser_email" value="<?php echo $info['raiser_email'] ?>" required>
+                        <input class="normal" type="text" name="raiser_email" value="<?php echo $info['raiser_email'] ?>">
                     </td>
                 </tr>
                 <tr class="ticket_raiser_info">
                     <td><strong>Ticket raised from</strong></td>
                     <td>
-                        <select name="raised_from" required>
+                        <select name="raised_from">
                             <option value=""></option>
                             <option value="Email">Email</option>
                             <option value="Phone">Phone</option>
@@ -134,19 +135,25 @@ $info = ($_POST && $errors) ? Format::input($_POST) : array(); //on error...use 
                             $('.ticket_raiser_info').show();
                         } else {
                             $('.ticket_raiser_info').hide();
+                            clear_raiser_fields();
                         }
                     });
                     if ( $('[name="raiser_info_enable"]').prop('checked') ) {
                         $('[name="raiser_info_enable"]').trigger('click');
                     } else {
                         $('.ticket_raiser_info').hide();
+                        clear_raiser_fields();
+                    }
+                    
+                    function clear_raiser_fields() {
+                        $('.ticket_raiser_info input, .ticket_raiser_info select').val('');
                     }
                 </script>
             </tbody>
             <tbody>
                 <tr>
                     <td colspan="2">
-                        <div><h3>Ticket Info</h3></div>
+                        <div><h3 class="msg">Ticket Info</h3></div>
                         <hr>
                     </td>
                 </tr>
@@ -166,17 +173,21 @@ $info = ($_POST && $errors) ? Format::input($_POST) : array(); //on error...use 
                 </tr>
                 <tr>
                     <td>
-                        <strong>Add to cc</strong>
+                        <strong>Add to cc<br>(comma seperated)</strong>
                     </td>
                     <td>
-                        <input type="text" name="alt_email" value="<?php echo $info['alt_email'] ?>" required>
+                        <!-- <input type="text" name="alt_email" value="<?php echo $info['alt_email'] ?>"> -->
+                        <br>
+                        <textarea name="alt_email">
+                            <?php echo $info['alt_email'] ?>
+                        </textarea>
                     </td>
                 </tr>
                 <tr>
                     <td><strong>Select cin:</strong></td>
                     <td>
                         <select name="cin">
-                            <option value="">Select ...</option>
+                            <option value="">no CIN</option>
                             <?php
                             $sql_cin = 'SELECT cin, service_type, client_name FROM ' . SERVICE_CIN_TABLE . ' ORDER BY client_name';
                             $type_data = db_query($sql_cin);
@@ -201,7 +212,7 @@ $info = ($_POST && $errors) ? Format::input($_POST) : array(); //on error...use 
             <tbody>
                 <tr>
                     <td colspan="2">
-                        <div><h3>Site Info</h3></div>
+                        <div><h3 class="msg">Site Info</h3></div>
                         <hr>
                     </td>
                 </tr>
@@ -211,9 +222,8 @@ $info = ($_POST && $errors) ? Format::input($_POST) : array(); //on error...use 
                     </td>
                     <td>
                         <select name="site_visited" class="normal" style="width: 150px" required>
-                            <option value=""></option>
-                            <option value="yes">yes</option>
                             <option value="no">no</option>
+                            <option value="yes">yes</option>
                         </select>
                     </td>
                 </tr>
@@ -233,7 +243,7 @@ $info = ($_POST && $errors) ? Format::input($_POST) : array(); //on error...use 
             <tbody>
                 <tr>
                     <td colspan="2">
-                        <div><h3>Link Info</h3></div>
+                        <div><h3 class="msg">Link Info</h3></div>
                         <hr>
                     </td>
                 </tr>
@@ -268,7 +278,7 @@ $info = ($_POST && $errors) ? Format::input($_POST) : array(); //on error...use 
                 <tr>
                     <td><strong>Down time duration(U)</strong></td>
                     <td>
-                        <input class="normal" type="text" name="downtime_duration_front">
+                        <input class="normal" type="text" name="downtime_duration_front" autocomplete="off">
                         <input type="hidden" name="downtime_duration"> <!-- duration in minutes -->
                     </td>
                 </tr>
@@ -276,7 +286,7 @@ $info = ($_POST && $errors) ? Format::input($_POST) : array(); //on error...use 
             <tbody>
                 <tr>
                     <td colspan="2">
-                        <h3>SLA Info</h3>
+                        <h3 class="msg">SLA Info</h3>
                     </td>
                     <td>
                         <hr>
@@ -286,16 +296,15 @@ $info = ($_POST && $errors) ? Format::input($_POST) : array(); //on error...use 
                     <td><strong>SLA claim</strong></td>
                     <td>
                         <select class="normal" name="sla_claim" style="width: 150px" required>
-                            <option value=""></option>
-                            <option value="yes">yes</option>
                             <option value="no">no</option>
+                            <option value="yes">yes</option>
                         </select>
                     </td>
                 </tr>
                 <tr class="sla_data">
                     <td><strong>Duration(E) in minutes</strong></td>
                     <td>
-                        <input class="normal" type="text" name="sla_claim_duration_front">
+                        <input class="normal" type="text" name="sla_claim_duration_front" autocomplete="off">
                         <input type="hidden" name="sla_claim_duration">
                     </td>
                 </tr>
@@ -309,6 +318,9 @@ $info = ($_POST && $errors) ? Format::input($_POST) : array(); //on error...use 
             <tbody>
                 <tr>
                     <td colspan="2">
+                        <br>
+                        <br>
+                        <br>
                         <input class="button submit save" type="submit" name="submit_x" value="Submit Ticket">
                     </td>
                 </tr>
@@ -319,10 +331,30 @@ $info = ($_POST && $errors) ? Format::input($_POST) : array(); //on error...use 
 
 <script type="text/javascript">
 
+    $('h3.msg').css({
+        'margin-top': '50px',
+        'background-color': '#F4F4FF',
+        'padding': '10px'
+    });
+    $('table').css({
+        'background-color': ''
+    });
+
     $('.ticket_datetimepicker').datetimepicker({
         controlType: 'select',
         dateFormat: "dd-mm-yy",
         timeFormat: 'hh:mm tt'
+    });
+    
+    $('[name="alt_email"]').blur(function(event) {
+        
+        var cc_emails = $(event.target).val().replace(/;/g, ',');
+        var cc_emails = cc_emails.replace(/\n/g, '');
+        if ( cc_emails ) {
+            $(event.target).val(cc_emails);
+        } else {
+            $(event.target).val('');
+        }
     });
     
     $('[name="downtime_duration_front"]').on('click', function(event) { //TODO: currently its users duty to select valid range, before and after validation
@@ -406,6 +438,13 @@ $info = ($_POST && $errors) ? Format::input($_POST) : array(); //on error...use 
     $('div#new_ticket select:not(.normal)').css('width', '300px');
     $('div#new_ticket th').css('font-size', '1.5em');
     $('div#new_ticket td.submit').css('padding-top', '50px');
+    
+    $('[name="submit_x"]').click(function(event) {
+        if (!$('[name="client_id"]').val()) {
+            alert('please select a client');
+            event.defaultPrevented();
+        }
+    });
 
     var options = {
         script: "ajax.php?api=tickets&f=searchbyemail&limit=10&",

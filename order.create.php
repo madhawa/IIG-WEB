@@ -25,9 +25,6 @@ if ($_POST) {
     }
 }
 
-//for debugging
-print_r($errors);
-
 //page
 require(CLIENTINC_DIR . 'header.inc.php');
 require(ROOT_DIR . $inc);

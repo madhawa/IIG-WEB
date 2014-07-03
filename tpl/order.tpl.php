@@ -17,7 +17,9 @@ if ( $do == 'new_by_scp_staff' ) {
     $form_action = './orders.php?do=new_order';
 }
 ?>
-<span class="red">*</span>&nbsp;&nbsp;required fields are marked by a red star
+required fields are marked by a star
+<br>
+<br>
 <div id="order_full_form">
     <script type="text/javascript">
         $(function() {
@@ -27,7 +29,7 @@ if ( $do == 'new_by_scp_staff' ) {
     <?php if ( !$thisuser->isClient() ) { ?>
         <button type="button" name="edit_order">edit this order</button>
     <?php } ?>
-    <h1>SERVICE ORDER FORM</h1>
+    <h1 align="center">SERVICE ORDER FORM</h1>
     <br>
     <?php if ($do) { ?>
 
@@ -50,19 +52,18 @@ if ( $do == 'new_by_scp_staff' ) {
                     <div id="service_order_form_head">
                         <div id="service_order_form_head_fields">
                             <input type="hidden" name="do" value="<?php   echo   $do; ?>">
-                            <input <?php   echo   $readonly ?> type="hidden" name="a" value="">
+                            <input  type="hidden" name="a" value="">
                             <input type="hidden" name="t" value="">
                             <input type="hidden" name="client_id" value="<?php if ($thisuser->isClient())   echo   $thisuser->getId(); ?>">
                             <input type="hidden" name="order_id" value="<?php   echo   $rep['order_id'] ? $rep['order_id'] : $order_id; ?>">
-                            <table>
+                            <table width="auto">
                                 <tr>
-                                    <td width="20%"><span class="red">*</span>&nbsp;&nbsp;Customer Relationship No:</td><td><input <?php   echo   $readonly ?> type="text" value="<?php   echo   $rep['customer_rel_no']; ?>" name="customer_rel_no" required>
+                                    <td>Customer Relationship No:</td><td><input  type="text" value="<?php   echo   $rep['customer_rel_no']; ?>" name="customer_rel_no" required>
                                         &nbsp;<span class="error">&nbsp;<?php   echo   $errors['customer_rel_no']; ?></span></td>
-                                    <td id="company_logo" rowspan="6" align="center"><img src="./images/company_logo.png" alt="logo"></td>
+                                    <td width="60%" id="company_logo" rowspan="6"><img align="right" src="./images/company_logo.png" alt="logo"></td>
                                 </tr>
-                                <!-- TODO urgent: we are showing client id below, this is dangerous security issue, implement client external id asap -->
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Customer Name:</td><td><input <?php   echo   $readonly ?> type="text" name="customer_name" value="<?php
+                                    <td>Customer Name:</td><td><input  type="text" name="customer_name" value="<?php
                                     if ($do == 'create_by_client') {
                                           echo   $thisuser->getName();
                                     } else {
@@ -72,7 +73,7 @@ if ( $do == 'new_by_scp_staff' ) {
                                         &nbsp;<span class="error">&nbsp;<?php   echo   $errors['customer_name']; ?></span></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Customer Email ID:</td><td><input <?php   echo   $readonly ?> type="email" name="customer_email" value="<?php 
+                                    <td>Customer Email ID:</td><td><input  type="email" name="customer_email" value="<?php 
                                     if ($do == 'create_by_client') {
                                           echo   $thisuser->getEmail();
                                     } else {
@@ -82,7 +83,7 @@ if ( $do == 'new_by_scp_staff' ) {
                                         &nbsp;<span class="error">&nbsp;<?php   echo   $errors['customer_email']; ?></span></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Customer Type:</td>
+                                    <td>Customer Type:</td>
                                     <td><select name="customer_type" required>
                                             <option value="">Please Select</option>
                                             <option value="Enterprise Customer" <?php if ($rep['customer_type'] == 'Enterprise Customer')   echo   'selected'; ?> >Enterprise Customer</option>
@@ -98,7 +99,7 @@ if ( $do == 'new_by_scp_staff' ) {
                                         &nbsp;<span class="error">&nbsp;<?php   echo   $errors['customer_type']; ?></span></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Circuit Type:</td>
+                                    <td>Circuit Type:</td>
                                     <td><select name="circuit_type" required>
                                             <option value="">Please Select</option>
                                             <option value="Half-Circuit" <?php if ($rep['service_type'] == 'Half-Circuit')   echo   'selected'; ?> >Half-Circuit</option>
@@ -109,7 +110,7 @@ if ( $do == 'new_by_scp_staff' ) {
                                         &nbsp;<span class="error">&nbsp;<?php   echo   $errors['service_type']; ?></span></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Service Type:</td>
+                                    <td>Service Type:</td>
                                     <td><select name="service_type" required>
                                             <option value="">Please Select</option>
                                             <option value="only IP Transit" <?php if ($rep['circuit_type'] == 'only IP Transit')   echo   'selected'; ?> >only IP Transit</option>
@@ -129,49 +130,52 @@ if ( $do == 'new_by_scp_staff' ) {
                     </div>
 
                     <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
                     <div id="order_details">
-                        <h2 allign="center">Order Details</h2>
+                        <h1 allign="center">Order Details</h1>
+                        <hr>
 
                         <div id="order_creator_info">
                             <br>
                             <p id="order_body_head_text">
                                 We hereby order for Bandwidth connectivity for our Telecommunication services to 1Asia Alliance Communication Ltd, subject to terms and conditions as described in the order form, this service order form fully comply with MSA and SLA as agreed, We are furnishing the necessary details as follows:-
                             </p>
-                            <br>
-                            <br>
                             <table>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Contact Person Name:</td><td colspan="5"><input <?php   echo   $readonly ?> type="text" name="order_creator_name" value="<?php   echo   $rep['order_creator_name']; ?>" required>
+                                    <td>Contact Person Name:</td><td colspan="5"><input  type="text" name="order_creator_name" value="<?php   echo   $rep['order_creator_name']; ?>" required>
                                         &nbsp;<span class="error">&nbsp;<?php   echo   $errors['order_creator_name']; ?></span></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Designation:</td><td><input <?php   echo   $readonly ?> type="text" name="order_creator_designation" value="<?php   echo   $rep['order_creator_designation']; ?>" required>
+                                    <td>Designation:</td><td><input  type="text" name="order_creator_designation" value="<?php   echo   $rep['order_creator_designation']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_creator_designation']; ?></span></td>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Department Name:</td><td colspan="3"><input <?php   echo   $readonly ?> type="text" name="order_creator_dept_name" value="<?php   echo   $rep['order_creator_dept_name']; ?>" required>
+                                    <td width="20%">Department Name:</td><td colspan="3"><input  type="text" name="order_creator_dept_name" value="<?php   echo   $rep['order_creator_dept_name']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_creator_dept_name']; ?></span></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Address:</td><td colspan="5"><input <?php   echo   $readonly ?> type="text" name="order_creator_address" value="<?php   echo   $rep['order_creator_address']; ?>" required>
+                                    <td>Address:</td><td colspan="5"><input  type="text" name="order_creator_address" value="<?php   echo   $rep['order_creator_address']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_creator_address']; ?></span></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;City:</td><td><input <?php   echo   $readonly ?> type="text" name="order_creator_city" value="<?php   echo   $rep['order_creator_city']; ?>" required>
+                                    <td>City:</td><td><input  type="text" name="order_creator_city" value="<?php   echo   $rep['order_creator_city']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_creator_city']; ?></span></td>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;ZIP/PO Code:</td><td><input <?php   echo   $readonly ?>  type="text" name="order_creator_zip_or_po" value="<?php   echo   $rep['order_creator_zip_or_po']; ?>" placeholder="minimum 4 digit" required>
+                                    <td>ZIP/PO Code:</td><td><input   type="text" name="order_creator_zip_or_po" value="<?php   echo   $rep['order_creator_zip_or_po']; ?>" placeholder="minimum 4 digit" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_creator_zip_or_po']; ?></span></td>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Country:</td><td><input <?php   echo   $readonly ?> type="text" name="order_creator_country" value="<?php   echo   $rep['order_creator_country']; ?>" required>
+                                    <td>Country:</td><td><input  type="text" name="order_creator_country" value="<?php   echo   $rep['order_creator_country']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_creator_country']; ?></span></td>
                                 </tr>
                                 <tr>
-                                    <td>Office Phone:</td><td><input <?php   echo   $readonly ?> type="text" name="order_creator_office_phone" value="<?php   echo   $rep['order_creator_office_phone']; ?>" placeholder="01********" required>
+                                    <td>Office Phone:</td><td><input  type="text" name="order_creator_office_phone" value="<?php   echo   $rep['order_creator_office_phone']; ?>" placeholder="01********" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_creator_office_phone']; ?></span></td>
-                                    <td>Fax No:</td><td><input <?php   echo   $readonly ?> type="text" name="order_creator_fax" value="<?php   echo   $rep['order_creator_fax']; ?>" required>
+                                    <td>Fax No:</td><td><input  type="text" name="order_creator_fax" value="<?php   echo   $rep['order_creator_fax']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_creator_fax']; ?></span></td>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Mobile:</td><td><input <?php   echo   $readonly ?> type="text" name="order_creator_mobile" value="<?php   echo   $rep['order_creator_mobile']; ?>" required>
+                                    <td>Mobile:</td><td><input  type="text" name="order_creator_mobile" value="<?php   echo   $rep['order_creator_mobile']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_creator_mobile']; ?></span></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Ready For Service Date:</td><td><input <?php   echo   $readonly ?> type="text" name="order_creator_service_ready_date" class="datepicker" value="<?php   echo   $rep['order_creator_service_ready_date']; ?>" placeholder="click to select" required>
+                                    <td>Ready For Service Date:</td><td><input  type="text" name="order_creator_service_ready_date" class="datepicker" value="<?php   echo   $rep['order_creator_service_ready_date']; ?>" placeholder="click to select" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_creator_service_ready_date']; ?></span></td>
                                 </tr>
                             </table>
@@ -179,42 +183,45 @@ if ( $do == 'new_by_scp_staff' ) {
                             <br>
                         </div> <!-- END id="order_creator_info" -->
 
-
+                        <br>
+                        <br>
                         <div id="customer_end_details">
-                            <h3>Customer End Details</h3>
+                            <h1>Customer End Details</h1>
+                            <hr>
+                            <br>
                             <table>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Contact Person Name:</td><td colspan="5"><input <?php   echo   $readonly ?> type="text" name="order_customer_name" value="<?php   echo   $rep['order_customer_name']; ?>" required>
+                                    <td>Contact Person Name:</td><td colspan="5"><input  type="text" name="order_customer_name" value="<?php   echo   $rep['order_customer_name']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_name']; ?></span></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Designation:</td><td><input <?php   echo   $readonly ?> type="text" name="order_customer_designation" value="<?php   echo   $rep['order_customer_designation']; ?>" required>
+                                    <td>Designation:</td><td><input  type="text" name="order_customer_designation" value="<?php   echo   $rep['order_customer_designation']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_designation']; ?></span></td>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Department Name:</td><td><input <?php   echo   $readonly ?> type="text" name="order_customer_dept_name" value="<?php   echo   $rep['order_customer_dept_name']; ?>" required>
+                                    <td>Department Name:</td><td><input  type="text" name="order_customer_dept_name" value="<?php   echo   $rep['order_customer_dept_name']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_dept_name']; ?></span></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Address:</td><td colspan="5"><input <?php   echo   $readonly ?> type="text" name="order_customer_address" value="<?php   echo   $rep['order_customer_address']; ?>" required>
+                                    <td>Address:</td><td colspan="5"><input  type="text" name="order_customer_address" value="<?php   echo   $rep['order_customer_address']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_address']; ?></span></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;City:</td><td><input <?php   echo   $readonly ?> type="text" name="order_customer_city" value="<?php   echo   $rep['order_customer_city']; ?>" required>
+                                    <td>City:</td><td><input  type="text" name="order_customer_city" value="<?php   echo   $rep['order_customer_city']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_city']; ?></span></td>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;ZIP/PO Code:</td><td><input <?php   echo   $readonly ?> type="text" name="order_customer_zip_or_po" value="<?php   echo   $rep['order_customer_zip_or_po']; ?>" placeholder="minimum 4 digit" required>
+                                    <td>ZIP/PO Code:</td><td><input  type="text" name="order_customer_zip_or_po" value="<?php   echo   $rep['order_customer_zip_or_po']; ?>" placeholder="minimum 4 digit" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_zip_or_po']; ?></span></td>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Country:</td><td><input <?php   echo   $readonly ?> type="text" name="order_customer_country" value="<?php   echo   $rep['order_customer_country']; ?>" required>
+                                    <td>Country:</td><td><input  type="text" name="order_customer_country" value="<?php   echo   $rep['order_customer_country']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_country']; ?></span></td>
                                 </tr>
                                 <tr>
-                                    <td>Office Phone:</td><td><input <?php   echo   $readonly ?> type="text" name="order_customer_phone_office" value="<?php   echo   $rep['order_customer_phone_office']; ?>" placeholder="01********" required>
+                                    <td>Office Phone:</td><td><input  type="text" name="order_customer_phone_office" value="<?php   echo   $rep['order_customer_phone_office']; ?>" placeholder="01********" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_pone_office']; ?></span></td>
-                                    <td>Fax No:</td><td><input <?php   echo   $readonly ?> type="text" name="order_customer_fax" value="<?php   echo   $rep['order_customer_fax']; ?>" required>
+                                    <td>Fax No:</td><td><input  type="text" name="order_customer_fax" value="<?php   echo   $rep['order_customer_fax']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_fax']; ?></span></td>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Mobile:</td><td><input <?php   echo   $readonly ?> type="text" name="order_customer_mobile" value="<?php   echo   $rep['order_customer_mobile']; ?>" required>
+                                    <td>Mobile:</td><td><input  type="text" name="order_customer_mobile" value="<?php   echo   $rep['order_customer_mobile']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_mobile']; ?></span></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Backhaul Provider:</td>
+                                    <td>Backhaul Provider:</td>
                                     <td><select name="order_customer_backhaul_provider" required>
                                             <option value="">Please Select</option>
                                             <option value="NTTN-F@H" <?php if ($rep['order_customer_backhaul_provider'] == 'NTTN-F@H')   echo   'selected'; ?> >NTTN-F@H</option>
@@ -227,7 +234,7 @@ if ( $do == 'new_by_scp_staff' ) {
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_backhaul_provider']; ?></span></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Backhaul Responsibility:</td>
+                                    <td>Backhaul Responsibility:</td>
                                     <td><select name="order_customer_backhaul_responsibility" required>
                                             <option value="">Please Select</option>
                                             <option value="Customer Responsibility" <?php if ($rep['order_customer_backhaul_responsibility'] == 'Customer Responsibility')   echo   'selected'; ?> >Customer Responsibility</option>
@@ -238,7 +245,7 @@ if ( $do == 'new_by_scp_staff' ) {
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_backhaul_responsibility']; ?></span></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Equipment to be used:</td>
+                                    <td>Equipment to be used:</td>
                                     <td><select name="order_customer_equipment_to_be_used" required>
                                             <option value="">Please Select</option>
                                             <option value="Router only" <?php if ($rep['order_customer_equipment_to_be_used'] == 'Router only')   echo   'selected'; ?> >Router only</option>
@@ -247,18 +254,18 @@ if ( $do == 'new_by_scp_staff' ) {
                                             <option value="Other" <?php if ($rep['order_customer_equipment_to_be_used'] == 'Other')   echo   'selected'; ?> >Other</option>
                                         </select>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_equipment_to_be_used']; ?></span></td>
-                                    <td align="right">If others:</td><td colspan="3"><input <?php   echo   $readonly ?>  type="text" name="order_customer_equipment_others" value="<?php   echo   $rep['order_customer_equipment_others']; ?>"></td>
+                                    <td align="right">If others:</td><td colspan="3"><input   type="text" name="order_customer_equipment_others" value="<?php   echo   $rep['order_customer_equipment_others']; ?>"></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Equipment Name:</td><td><input <?php   echo   $readonly ?> type="text" name="order_customer_equipment_name" value="<?php   echo   $rep['order_customer_equipment_name']; ?>" required>
+                                    <td>Equipment Name:</td><td><input  type="text" name="order_customer_equipment_name" value="<?php   echo   $rep['order_customer_equipment_name']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_equipment_name']; ?></span></td>
-                                    <td align="right"><span class="red">*</span>&nbsp;&nbsp;Model:</td><td><input <?php   echo   $readonly ?>  type="text" name="order_customer_equipment_model" value="<?php   echo   $rep['order_customer_equipment_model']; ?>" required>
+                                    <td align="right">Model:</td><td><input   type="text" name="order_customer_equipment_model" value="<?php   echo   $rep['order_customer_equipment_model']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_equipment_model']; ?></span></td>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Vendor:</td><td><input <?php   echo   $readonly ?> type="text" name="order_customer_equipment_vendor" value="<?php   echo   $rep['order_customer_equipment_vendor']; ?>" required>
+                                    <td>Vendor:</td><td><input  type="text" name="order_customer_equipment_vendor" value="<?php   echo   $rep['order_customer_equipment_vendor']; ?>" required>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_equipment_vendor']; ?></span></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Connectivity Interface:</td>
+                                    <td>Connectivity Interface:</td>
                                     <td><select name="order_customer_connectivity_interface" required>
                                             <option value="">Please Select</option>
                                             <option value="Ethernet(10/100)" <?php if ($rep['order_customer_connectivity_interface'] == 'Ethernet(10/100)')   echo   'selected'; ?> >Ethernet(10/100)</option>
@@ -275,10 +282,10 @@ if ( $do == 'new_by_scp_staff' ) {
                                             <option value="Other" <?php if ($rep['order_customer_connectivity_interface'] == 'Other')   echo   'selected'; ?> >Other</option>
                                         </select>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_connectivity_interface']; ?></span></td>
-                                    <td align="right">If Others:</td><td colspan="3"><input <?php   echo   $readonly ?> type="text" name="order_customer_connectivity_interface_others" value="<?php   echo   $rep['order_customer_connectivity_interface_others']; ?>"></td>
+                                    <td align="right">If Others:</td><td colspan="3"><input  type="text" name="order_customer_connectivity_interface_others" value="<?php   echo   $rep['order_customer_connectivity_interface_others']; ?>"></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Protocol to be used:</td>
+                                    <td>Protocol to be used:</td>
                                     <td><select name="order_customer_protocol_to_be_used" required>
                                             <option value="">Please Select</option>
                                             <option value="IP" <?php if ($rep['order_customer_protocol_to_be_used'] == 'IP')   echo   'selected'; ?> >IP</option>
@@ -288,10 +295,10 @@ if ( $do == 'new_by_scp_staff' ) {
                                             <option value="Other" <?php if ($rep['order_customer_protocol_to_be_used'] == 'Other')   echo   'selected'; ?> >Other</option>
                                         </select>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_protocol_to_be_used']; ?></span></td>
-                                    <td align="right">If Others:</td><td colspan="3"><input <?php   echo   $readonly ?> type="text" name="order_customer_protocol_others" value="<?php   echo   $rep['order_customer_protocol_others']; ?>"></td>
+                                    <td align="right">If Others:</td><td colspan="3"><input  type="text" name="order_customer_protocol_others" value="<?php   echo   $rep['order_customer_protocol_others']; ?>"></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="red">*</span>&nbsp;&nbsp;Connectivity Capacity:</td>
+                                    <td>Connectivity Capacity:</td>
                                     <td><select name="order_customer_connectivity_capacity" required>
                                             <option value="">Please Select</option>
                                             <option value="10-mbps" <?php if ($rep['order_customer_connectivity_capacity'] == '10-mbps')   echo   'selected'; ?> >10 Mbps</option>
@@ -307,74 +314,97 @@ if ( $do == 'new_by_scp_staff' ) {
                                             <option value="Other" <?php if ($rep['order_customer_connectivity_capacity'] == 'Other')   echo   'selected'; ?> >Other</option>
                                         </select>
                                         &nbsp;<span class="error"><?php   echo   $errors['order_customer_connectivity_capacity']; ?></span></td>
-                                    <td align="right">If Others:</td><td colspan="3"><input <?php   echo   $readonly ?> type="text" name="order_customer_connectivity_capacity_others" value="<?php   echo   $rep['order_customer_connectivity_capacity_others']; ?>"></td>
+                                    <td align="right">If Others:</td><td colspan="3"><input  type="text" name="order_customer_connectivity_capacity_others" value="<?php   echo   $rep['order_customer_connectivity_capacity_others']; ?>"></td>
                                 </tr>
                             </table>
                             <br>
                             Special Instructions If Any:
                             <br><textarea name="order_customer_special_ins" rows="4" cols="70" ><?php   echo   $rep['order_customer_special_ins']; ?></textarea>
+
+
+                            <br>
                             <br>
                             <br>
                             <br>
                             <div id="create_order_technical_info">
+                                <h1>Technical info</h1>
+                                <hr>
+                                <br>
                                 <table>
                                     <tr>
-                                        <td><span class="red">*</span>&nbsp;&nbsp;Technical Contact Name:</td><td colspan="5"><input <?php   echo   $readonly ?>  type="text" name="order_technical_contact_name" value="<?php   echo   $rep['order_technical_contact_name']; ?>" required>
-                                            &nbsp;<span class="error"><?php   echo   $errors['order_technical_contact_name']; ?></span></td>
+                                        <td>Technical Contact Name:</td>
+                                        <td><input   type="text" name="order_technical_contact_name" value="<?php   echo   $rep['order_technical_contact_name']; ?>" required>&nbsp;<span class="error"><?php   echo   $errors['order_technical_contact_name']; ?></span></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                     <tr>
-                                        <td><span class="red">*</span>&nbsp;&nbsp;Mobile No:</td><td><input <?php   echo   $readonly ?> type="text" name="order_technical_contact_mobile" value="<?php   echo   $rep['order_technical_contact_mobile']; ?>" required>
+                                        <td>Mobile No:</td>
+                                        <td><input  type="text" name="order_technical_contact_mobile" value="<?php   echo   $rep['order_technical_contact_mobile']; ?>" required>
                                             &nbsp;<span class="error"><?php   echo   $errors['order_technical_contact_mobile']; ?></span></td>
-                                        <td align="right">Phone Number:</td><td><input <?php   echo   $readonly ?>  type="text" name="order_technical_contact_phone" value="<?php   echo   $rep['order_technical_contact_phone']; ?>" placeholder="01********" required>
-                                            &nbsp;<span class="error"><?php   echo   $errors['order_technical_contact_phone']; ?></span></td>
-                                        <td><span class="red">*</span>&nbsp;&nbsp;Email ID:<input <?php   echo   $readonly ?> type="email" name="order_technical_contact_email" value="<?php   echo   $rep['order_technical_contact_email']; ?>" required>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Phone Number:</td>
+                                        <td><input   type="text" name="order_technical_contact_phone" value="<?php   echo   $rep['order_technical_contact_phone']; ?>" placeholder="01********" required>
+                                        &nbsp;<span class="error"><?php   echo   $errors['order_technical_contact_phone']; ?></span></td>
+                                        <td>Email ID:</td>
+                                        <td><input  type="email" name="order_technical_contact_email" value="<?php   echo   $rep['order_technical_contact_email']; ?>" required>
                                             &nbsp;<span class="error"><?php   echo   $errors['order_technical_contact_email']; ?></span></td>
                                     </tr>
                                     <tr>
-                                        <td>Messenger IDs:</td><td colspan="5"><input <?php   echo   $readonly ?> type="text" name="order_technical_contact_messengers" value="<?php   echo   $rep['order_technical_contact_messengers']; ?>" required placeholder="write with comma seperated">
-                                            &nbsp;<span class="error"><?php   echo   $errors['order_technical_contact_messengers']; ?></span></td>
+                                        <td>Messenger IDs:</td>
+                                        <td><input style="width: 200px" type="text" name="order_technical_contact_messengers" value="<?php   echo   $rep['order_technical_contact_messengers']; ?>" required placeholder="comma seperated"> &nbsp;<span class="error"><?php   echo   $errors['order_technical_contact_messengers']; ?></span></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                     <tr>
-                                        <td><span class="red">*</span>&nbsp;&nbsp;Routing Type Required:</td>
-                                        <td><select name="order_routing_type" required>
+                                        <td>Routing Type Required:</td>
+                                        <td>
+                                            <select name="order_routing_type" required>
                                                 <option value="">Please Select</option>
                                                 <option value="Static Routing" <?php if ($rep['order_routing_type'] == 'Static Routing')   echo   'selected'; ?> >Static Routing</option>
                                                 <option value="BGP" <?php if ($rep['order_routing_type'] == 'BGP')   echo   'selected'; ?> >BGP</option>
                                                 <option value="Other" <?php if ($rep['order_routing_type'] == 'Other')   echo   'selected'; ?> >Other</option>
                                             </select>
-                                            &nbsp;<span class="error"><?php   echo   $errors['order_routing_type']; ?></span></td>
+                                            &nbsp;<span class="error"><?php   echo   $errors['order_routing_type']; ?></span>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                     <tr>
-                                        <td><span class="red">*</span>&nbsp;&nbsp;Customer AS System Name:</td><td colspan="2" ><input <?php   echo   $readonly ?> type="text" name="order_customer_as_sys_name" value="<?php   echo   $rep['order_customer_as_sys_name']; ?>" required>
-                                            &nbsp;<span class="error"><?php   echo   $errors['order_customer_as_sys_name']; ?></span></td>
-                                        <td><span class="red">*</span>&nbsp;&nbsp;AS Number:<input <?php   echo   $readonly ?> type="text" name="order_customer_as_sys_num" value="<?php   echo   $rep['order_customer_as_sys_num']; ?>" placeholder="example: 10102" required>
-                                            &nbsp;<span class="error"><?php   echo   $errors['order_customer_as_sys_num']; ?></span></td>
+                                        <td>Customer AS System Name:</td>
+                                        <td><input  type="text" name="order_customer_as_sys_name" value="<?php   echo   $rep['order_customer_as_sys_name']; ?>" required> &nbsp;<span class="error"><?php   echo   $errors['order_customer_as_sys_name']; ?></span></td>
+                                        <td>AS Number:</td>
+                                        <td><input  type="text" name="order_customer_as_sys_num" value="<?php   echo   $rep['order_customer_as_sys_num']; ?>" placeholder="example: 10102" required>&nbsp;<span class="error"><?php   echo   $errors['order_customer_as_sys_num']; ?></span></td>
                                     </tr>
                                     <tr>
-                                        <td><span class="red">*</span>&nbsp;&nbsp;AS SET Number:</td><td colspan="5"><input <?php   echo   $readonly ?> type="text" name="order_customer_as_set_num" value="<?php   echo   $rep['order_customer_as_set_num']; ?>" required>
-                                            &nbsp;<span class="error"><?php   echo   $errors['order_customer_as_set_num']; ?></span></td>
+                                        <td>AS SET Number:</td>
+                                        <td><input  type="text" name="order_customer_as_set_num" value="<?php   echo   $rep['order_customer_as_set_num']; ?>" required>&nbsp;<span class="error"><?php   echo   $errors['order_customer_as_set_num']; ?></span></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                     <tr>
-                                        <td><span class="red">*</span>&nbsp;&nbsp;BGP Routing:</td>
-                                        <td><select name="order_bgp_routing" required>
+                                        <td>BGP Routing:</td>
+                                        <td>
+                                            <select name="order_bgp_routing" required>
                                                 <option value="">Please Select...</option>
                                                 <option value="Default Route" <?php if ($rep['order_bgp_routing'] == 'Default Route')   echo   'selected'; ?> >Default Route</option>
                                                 <option value="Full Route Table" <?php if ($rep['order_bgp_routing'] == 'Full Route Table')   echo   'selected'; ?> >Full Route Table</option>
                                                 <option value="Partial Route Table" <?php if ($rep['order_bgp_routing'] == 'Partial Route Table')   echo   'selected'; ?> >Partial Route Table</option>
                                                 <option value="Other" <?php if ($rep['order_bgp_routing'] == 'Other')   echo   'selected'; ?> >Other</option>
-                                            </select>
-                                            &nbsp;<span class="error"><?php   echo   $errors['order_bgp_routing']; ?></span></td>
-                                        <td><span class="red">*</span>&nbsp;&nbsp;Router Name:</td><td><input <?php   echo   $readonly ?> type="text" name="order_router_name" value="<?php   echo   $rep['order_router_name']; ?>" required>
-                                            &nbsp;<span class="error"><?php   echo   $errors['order_router_name']; ?></span></td>
+                                            </select>&nbsp;<span class="error"><?php   echo   $errors['order_bgp_routing']; ?></span></td>
+                                        <td>Router Name:</td>
+                                        <td><input  type="text" name="order_router_name" value="<?php   echo   $rep['order_router_name']; ?>" required>&nbsp;<span class="error"><?php   echo   $errors['order_router_name']; ?></span></td>
                                     </tr>
                                     <tr>
-                                        <td><span class="red">*</span>&nbsp;&nbsp;bandwidth speed(CIR):</td><td><input <?php   echo   $readonly ?> type="text" name="order_bw_speed_cir" value="<?php   echo   $rep['order_bw_speed_cir']; ?>" required>Mbps &nbsp;
-                                            &nbsp;<span class="error"><?php   echo   $errors['order_bw_speed_cir']; ?></span></td>
-                                        <td><span class="red">*</span>&nbsp;&nbsp;Max Burstable Limit:</td><td><input <?php   echo   $readonly ?> type="text" name="order_max_burstable_limit" value="<?php   echo   $rep['order_max_burstable_limit']; ?>" required>Mbps &nbsp;
-                                            &nbsp;<span class="error"><?php   echo   $errors['order_max_burstable_limit']; ?></span></td>
+                                        <td>bandwidth speed(CIR):</td>
+                                        <td style="width: auto"><input  type="text" name="order_bw_speed_cir" value="<?php   echo   $rep['order_bw_speed_cir']; ?>" placeholder="Mbps" required><span class="error"><?php   echo   $errors['order_bw_speed_cir']; ?></span></td>
+                                        <td>Max Burstable Limit:</td>
+                                        <td><input  type="text" name="order_max_burstable_limit" value="<?php   echo   $rep['order_max_burstable_limit']; ?>" placeholder="Mbps" required><span class="error"><?php   echo   $errors['order_max_burstable_limit']; ?></span></td>
                                     </tr>
                                     <tr>
-                                        <td><span class="red">*</span>&nbsp;&nbsp;Connectivity Interface:</td>
+                                        <td>Connectivity Interface:</td>
                                         <td><select name="connectivity_interface" required>
                                                 <option value="">Please Select...</option>
                                                 <option value="Ethernet(10/100)" <?php if ($rep['connectivity_interface'] == 'Ethernet(10/100)')   echo   'selected'; ?> >Ethernet(10/100)</option>
@@ -391,7 +421,8 @@ if ( $do == 'new_by_scp_staff' ) {
                                                 <option value="Other" <?php if ($rep['connectivity_interface'] == 'Other')   echo   'selected'; ?> >Other</option>
                                             </select>
                                             &nbsp;<span class="error"><?php   echo   $errors['connectivity_interface']; ?></span></td>
-                                        <td><span class="red">*</span>&nbsp;&nbsp;Fiber Type:</td><td><input <?php   echo   $readonly ?> type="text" name="order_fiber_type" value="<?php   echo   $rep['order_fiber_type']; ?>" required>
+                                        <td>Fiber Type:</td>
+                                        <td><input  type="text" name="order_fiber_type" value="<?php   echo   $rep['order_fiber_type']; ?>" required>
                                             &nbsp;<span class="error"><?php   echo   $errors['order_fiber_type']; ?></span></td>
                                     </tr>
                                 </table>
@@ -414,49 +445,52 @@ if ( $do == 'new_by_scp_staff' ) {
 
                             </div> <!-- END id="create_order_technical_info" -->
                         </div> <!-- END id="customer_end_details" -->
-
+            
+                        <br>
+                        <br>
                         <div id="order_billing_info">
-                            <h2>BILLING INFORMATION</h2>
+                            <h1>BILLING INFORMATION</h1>
+                            <hr>
                             <br>
                             <table id="billing_info">
                                 <tr>
                                     <td>Total Non Recurring Charges:</td>
-                                    <td><input <?php   echo   $readonly ?> type="text" name="order_billing_total_non_recurring_charges" value="<?php   echo   $rep['order_billing_total_non_recurring_charges']; ?>" >
+                                    <td><input  type="text" name="order_billing_total_non_recurring_charges" value="<?php   echo   $rep['order_billing_total_non_recurring_charges']; ?>" >
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Total Monthly Recurring Charges:</td>
-                                    <td><input <?php   echo   $readonly ?> type="text" name="order_billing_total_monthly_recurring_charges" value="<?php   echo   $rep['order_billing_total_monthly_recurring_charges']; ?>" >
+                                    <td><input  type="text" name="order_billing_total_monthly_recurring_charges" value="<?php   echo   $rep['order_billing_total_monthly_recurring_charges']; ?>" >
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Hardware Charges:</td>
-                                    <td><input <?php   echo   $readonly ?> type="text" name="order_billing_hw_charges" value="<?php   echo   $rep['order_billing_hw_charges']; ?>">
+                                    <td><input  type="text" name="order_billing_hw_charges" value="<?php   echo   $rep['order_billing_hw_charges']; ?>">
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Misc Charges:</td>
-                                    <td><input <?php   echo   $readonly ?> type="text" name="order_billing_misc_charges" value="<?php   echo   $rep['order_billing_misc_charges']; ?>">
+                                    <td><input  type="text" name="order_billing_misc_charges" value="<?php   echo   $rep['order_billing_misc_charges']; ?>">
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Special Discount:</td>
-                                    <td><input <?php   echo   $readonly ?> type="text" name="order_billing_special_discount" value="<?php   echo   $rep['order_billing_special_discount']; ?>">
+                                    <td><input  type="text" name="order_billing_special_discount" value="<?php   echo   $rep['order_billing_special_discount']; ?>">
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>VAT/TAX:</td>
-                                    <td><input <?php   echo   $readonly ?> type="text" name="order_billing_vat_or_tax" value="<?php   echo   $rep['order_billing_vat_or_tax']; ?>">
+                                    <td><input  type="text" name="order_billing_vat_or_tax" value="<?php   echo   $rep['order_billing_vat_or_tax']; ?>">
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Deposit:</td>
-                                    <td><input <?php   echo   $readonly ?> type="text" name="order_billing_deposit" value="<?php   echo   $rep['order_billing_deposit']; ?>">
+                                    <td><input  type="text" name="order_billing_deposit" value="<?php   echo   $rep['order_billing_deposit']; ?>">
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Total Payable with SOF:</td>
-                                    <td><input <?php   echo   $readonly ?> type="text" name="order_billing_total_payable_with_sof" value="<?php   echo   $rep['order_billing_total_payable_with_sof']; ?>">
+                                    <td><input  type="text" name="order_billing_total_payable_with_sof" value="<?php   echo   $rep['order_billing_total_payable_with_sof']; ?>">
                                     </td>
                                 </tr>
                             </table>
@@ -526,20 +560,25 @@ if ( $do == 'new_by_scp_staff' ) {
                         </ul>
                         <br>
                         <br>
-                        <table>
+                        <table width="100%">
                             <tr>
-                                <td><span class="red">*</span>&nbsp;&nbsp;Applicants Name:</td>
-                                <td><input <?php   echo   $readonly ?> type="text" name="applicants_name" value="<?php   echo   $rep['applicants_name']; ?>" required>
+                                <td>Applicants Name:</td>
+                                <td><input type="text" name="applicants_name" value="<?php   echo   $rep['applicants_name']; ?>" required>
                                     &nbsp;<span class="error"><?php   echo   $errors['applicants_name']; ?></span></td>
+                                <td></td>
+                                <td></td>
                             </tr>
                             <tr>
-                                <td><span class="red">*</span>&nbsp;&nbsp;Designation:</td>
-                                <td><input <?php   echo   $readonly ?> type="text" name="applicants_designation" value="<?php   echo   $rep['applicants_designation']; ?>" required>
-                                    &nbsp;<span class="error"><?php   echo   $errors['applicants_designation']; ?></span></td>
-                                <td><span class="red">*</span>&nbsp;&nbsp;Date:</td>
-                                <td><input type="text" class="datepicker" readonly name="application_date" value="<?php   echo   $rep['application_date']; ?>" placeholder="click to select" required>
-                                    &nbsp;<span class="error"><?php   echo   $errors['application_date']; ?></span></td>
-                                <td align="right">Signature with Company Seal</td>
+                                <td>Designation:</td>
+                                <td>
+                                    <input type="text" name="applicants_designation" value="<?php   echo   $rep['applicants_designation']; ?>" required>
+                                    &nbsp;<span class="error"><?php   echo   $errors['applicants_designation']; ?></span>
+                                </td>
+                                <td>
+                                    Date: <input type="text" class="datepicker" name="application_date" value="<?php   echo   $rep['application_date']; ?>" placeholder="click to select" required>
+                                    &nbsp;<span class="error"><?php   echo   $errors['application_date']; ?></span>
+                                </td>
+                                <td><span style="margin-left: auto">Signature with Company Seal</span></td>
                             </tr>
                         </table>
 
@@ -581,8 +620,7 @@ if ( $do == 'new_by_scp_staff' ) {
 
                     <?php if ( ($do == 'create_by_client') || ($do == 'new_by_scp_staff') ) { ?>
                         <div id="order_form_submit">
-                            <input class="button" type="submit" name="submit_order" value="submit order" />
-                            <input class="button" type="reset" value="Reset">
+                            <button class="button" type="submit" name="submit_order">Submit Order</button>
                             
                             <?php if ($do == 'new_by_scp_staff') { ?>
                                 <script type="text/javascript">

@@ -52,7 +52,7 @@ class StaffNav {
             }
             
             if ( $thisuser->isSuperAdmin() || $thisuser->isManagementStaff() ) {
-                $tabs[ORDER] = array('desc' => 'Orders', 'href' => 'orders.php', 'title' => 'Order Queue');
+                //$tabs[ORDER] = array('desc' => 'Orders', 'href' => 'orders.php', 'title' => 'Order Queue');
                 $tabs[TICKET] = array('desc' => 'Tickets', 'href' => 'tickets.php', 'title' => 'Ticket Queue');
                 $tabs[CLIENT] = array('desc' => 'Client', 'href' => 'client.php', 'title' => 'Customer management');
             }
@@ -64,6 +64,7 @@ class StaffNav {
                 $tabs[CAPACITY] = array('desc' => 'Capacity', 'href' => 'capacity.php', 'title' => 'Capacity');
             }
             if ( $thisuser->isSuperAdmin() || $thisuser->isSalesStaff() ) {
+                $tabs[TICKET] = array('desc' => 'Tickets', 'href' => 'tickets.php', 'title' => 'Ticket Queue');
                 $tabs[ORDER] = array('desc' => 'Orders', 'href' => 'orders.php', 'title' => 'Order Queue');
                 $tabs[TICKET] = array('desc' => 'Tickets', 'href' => 'tickets.php', 'title' => 'Ticket Queue');
             }

@@ -14,7 +14,7 @@
   vim: expandtab sw=4 ts=4 sts=4:
   $Id: $
  * ******************************************************************** */
-require('staff.inc.php');
+require_once('staff.inc.php');
 require_once(INCLUDE_DIR . 'class.ticket.php');
 require_once(INCLUDE_DIR . 'class.dept.php');
 require_once(INCLUDE_DIR . 'class.banlist.php');
@@ -116,8 +116,8 @@ if ($_POST && !$errors):
                     } elseif ($wasOpen) { //Closed on response???
                         $page = $ticket = null; //Going back to main listing.
                     }
-                } elseif (!$errors['err']) {
-                    $errors['err'] = 'Unable to post the response.';
+                } else {
+                    $errors['err'] .= 'Unable to post the response.';
                 }
                 break;
             case 'transfer':

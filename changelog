@@ -1,0 +1,5 @@
+version 1.7.0
+# UI change for creating a new ticket NOC side
+# UI change for viewing a ticket
+# width adjustment for pages in tickets section
+# displaying a list of emails by single email with line break, this helpful in viewing cc emails

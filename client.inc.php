@@ -18,6 +18,8 @@ if(!strcasecmp(basename($_SERVER['SCRIPT_NAME']),basename(__FILE__))) die('kwahe
 
 if(!file_exists('main.inc.php')) die('Fatal Error.');
 
+if ( !defined('OSTCLIENTINC') ) define('OSTCLIENTINC',TRUE);
+
 require_once('main.inc.php');
 
 if(!defined('INCLUDE_DIR')) die('Fatal error');
@@ -25,26 +27,17 @@ if(!defined('INCLUDE_DIR')) die('Fatal error');
 /*Some more include defines specific to client only */
 if(!defined('CLIENTINC_DIR')) define('CLIENTINC_DIR',INCLUDE_DIR.'client/');
 define('CCP_DIR',str_replace('//','/',dirname(__FILE__).'/'));//CCP:Client Control Panel
-define('OSTCLIENTINC',TRUE);
+
+/* include what is needed on client stuff */
+require_once(CLASS_DIR.'class.client.php');
+require_once(INCLUDE_DIR.'class.ticket.php');
+require_once(INCLUDE_DIR.'class.dept.php');
 
 //Check the status of the HelpDesk.
 if(!is_object($cfg) || !$cfg->getId() || $cfg->isHelpDeskOffline()) {
     include('./offline.php');
     exit;
 }
-
-/*
-//Forced upgrade? Version mismatch.
-if(defined('THIS_VERSION') && strcasecmp($cfg->getVersion(),THIS_VERSION)) {
-    die('System is offline for an upgrade.');
-    exit;
-} */
-
-/* include what is needed on client stuff */
-//require_once(INCLUDE_DIR.'class.client.php');
-require_once(CLASS_DIR.'class.client.php');
-require_once(INCLUDE_DIR.'class.ticket.php');
-require_once(INCLUDE_DIR.'class.dept.php');
 
 function clientLoginPage($msg) {
     //$_SESSION['_client']['auth']['dest']=THISPAGE;

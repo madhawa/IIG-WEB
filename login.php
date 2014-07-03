@@ -20,10 +20,7 @@ if (!defined('OSTCLIENTINC'))
 
 //require_once(INCLUDE_DIR . 'class.client.php');
 require_once(CLASS_DIR . 'class.client.php');
-require_once(INCLUDE_DIR . 'class.ticket.php');
-//We are ready baby
-//$loginmsg = $_SESSION['_client']['auth']['msg'];
-if ( !is_object($thisuser) || !$thisuser->isClient() ) {
+
 $loginmsg = $loginmsg ? $loginmsg : 'Authentication Required';
 
 //$loginmsg='Authentication Required';
@@ -64,7 +61,7 @@ if ($_POST && (!empty($_POST['login_field']) && !empty($_POST['password']))) {
         //$dest = ($dest && (!strstr($dest, 'login.php') && !strstr($dest, 'ajax.php'))) ? $dest : 'index.php';
         session_write_close();
         session_regenerate_id();
-        //@header("Location: $dest");
+        @header("Location: index.php");
         require_once('index.php'); //Just incase header is messed up.
         exit;
     }
@@ -88,14 +85,10 @@ if ($_POST && (!empty($_POST['login_field']) && !empty($_POST['password']))) {
         Sys::log(LOG_WARNING, 'Failed login attempt (client)', $alert);
     }
     */
-}
+} else {
 require(CLIENTINC_DIR . 'header.inc.php');
 require(TEMPLATE_DIR . 'client.login.tpl.php');
 require(CLIENTINC_DIR . 'footer.inc.php');
-
-} else {
-    require(CLIENTINC_DIR . 'header.inc.php');
-require('tickets.php');
-require(CLIENTINC_DIR . 'footer.inc.php');
 }
+
 ?>

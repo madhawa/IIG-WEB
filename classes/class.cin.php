@@ -20,7 +20,7 @@ class cin {
     }
 
     function get_cin_value() {
-        return $this->cin;
+        return $this->db_array['cin'];
     }
 
     function get_client_name() {
@@ -37,6 +37,14 @@ class cin {
 
     function get_circuit_type() {
         return $this->db_array['circuit_type'];
+    }
+
+    function get_from_location() {
+        return $this->db_array['from_location'];
+    }
+    
+    function get_to_location() {
+        return $this->db_array['to_location'];
     }
 }
 

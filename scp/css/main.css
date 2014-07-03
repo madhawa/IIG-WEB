@@ -103,9 +103,7 @@ a { color:#006699; text-decoration: none; }
 a:hover { color:#DB8606; text-decoration: none; }
 
 table input:not([type="submit"], [type="checkbox"]) { height: 30px; }
-td {
-    padding: 10px 10px;
-}
+
 select {
     border: 1px solid #999;
     border-right-color: #DDD;

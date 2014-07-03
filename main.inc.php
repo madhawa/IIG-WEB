@@ -32,10 +32,6 @@
     ini_set('allow_url_fopen', 0);
     ini_set('allow_url_include', 0);
 
-
-    define( 'IP', $_SERVER['REMOTE_ADDR'] );
-
-
     #Disable session ids on url.
     ini_set('session.use_trans_sid', 0);
     #No cache
@@ -44,17 +40,23 @@
     //ini_set('session.cookie_path','/osticket/');
 
     #Error reporting...Good idea to ENABLE error reporting to a file. i.e display_errors should be set to false
-    error_reporting(E_ALL ^ E_NOTICE ^ E_STRICT); //Respect whatever is set in php.ini (sysadmin knows better??)
-    //error_reporting(E_ALL);
-    #Don't display errors
-    //ini_set('display_errors',0);
-    //ini_set('display_startup_errors',0);
     #Display errors
-    ini_set('display_errors',1);
-    ini_set('display_startup_errors',0);
+    if ( defined('OSTCLIENTINC') ) { //no for client
+        #error_reporting(E_ALL ^ E_NOTICE ^ E_STRICT);
+        ini_set('display_errors',0);
+        ini_set('display_startup_errors',0);
+    } else {
+        error_reporting(E_ALL ^ E_NOTICE ^ E_STRICT);
+        ini_set('display_errors',1);
+        ini_set('display_startup_errors',0);
+    }
 
     //Start the session
     session_start();
+    
+    
+    define('PORTAL_NAME', '1Asia Alliance Customer Portal');
+    define('VERSION', '1.7');
 
     #Set Dir constants
     if(!defined('ROOT_PATH')) define('ROOT_PATH','./'); //root path. Damn directories
@@ -62,6 +64,7 @@
     define('SITE_URL', '');
     define('ASSETS_PATH',ROOT_PATH.'assets/default/'); //Change this if include is moved outside the web path.
     define('INCLUDE_DIR',ROOT_DIR.'include/'); //Change this if include is moved outside the web path.
+    define('HELPER_DIR',ROOT_DIR.'helpers/');
     define('PEAR_DIR',INCLUDE_DIR.'pear/');
     define('SETUP_DIR',INCLUDE_DIR.'setup/');
     define('CSS_DIR',ROOT_DIR.'scp/css');
@@ -72,26 +75,13 @@
     define('UPLOAD_DIR', ROOT_DIR.'scp/upload/');
     /*############## Do NOT monkey with anything else beyond this point UNLESS you really know what you are doing ##############*/
 
-    $ip = getenv('HTTP_CLIENT_IP')?:
-        getenv('HTTP_X_FORWARDED_FOR')?:
-        getenv('HTTP_X_FORWARDED')?:
-        getenv('HTTP_FORWARDED_FOR')?:
-        getenv('HTTP_FORWARDED')?:
-        getenv('REMOTE_ADDR');
-
+    define( 'IP', $_SERVER['REMOTE_ADDR'] );
     if ( IP == '127.0.0.1' ) { //when i am in localhost
         define('SERVER_FOLDER', 'asiaahl-helpdesk');
         define('SCP_URL', ($_SERVER['HTTPS']?'https':'http').'://'.$_SERVER['HTTP_HOST'].'/'.SERVER_FOLDER.'/scp');
     } else { //for asiaahl
         define('SCP_URL', ($_SERVER['HTTPS']?'https':'http').'://'.$_SERVER['HTTP_HOST'].'/scp');
     }
-
-    #plugins, add your plugins dir after the PLUGINS_DIR line
-    define('PLUGINS_DIR', ROOT_DIR . 'plugins/');
-    define('PLUGIN_CHAT_DIR', ROOT_DIR . 'chat/');
-
-    #Current version..
-    define('THIS_VERSION','1.6 ST'); //Changes from version to version.
 
     #load config info
     $configfile='';
@@ -122,6 +112,9 @@
 
 
     #include required files
+    require_once(HELPER_DIR.'utils.php');
+    require_once(INCLUDE_DIR.'class.session.php');
+    
     require(INCLUDE_DIR.'class.usersession.php');
     require(INCLUDE_DIR.'class.pagenate.php'); //Pagenate helper!
     require(CLASS_DIR.'class.sys.php'); //system loader & config & logger.
@@ -135,9 +128,6 @@
     define('ACCESS_LEVEL_SUPER', 1);
     define('ACCESS_LEVEL_MANAGER', 2);
     define('ACCESS_LEVEL_STAFF', 3);
-    
-    #departments 
-    define('PERMISSION_FIELDS_PREFIX', 'permission_'); //prefix in department permissions fields in db and web form
     
     //built in departments
     define('NOC', 'NOC 1ASIA-AHL');
@@ -251,6 +241,4 @@
 
     //including helper functions
     require(INCLUDE_DIR . 'helpers.php');
-    
-    //some another constants
 ?>
